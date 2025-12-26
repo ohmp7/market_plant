@@ -1,5 +1,5 @@
-#include <arpa/inet.h>ß
 #include <cstdint>
+#include <cstddef>
 #include <exception>
 #include <iostream>
 #include <string>
@@ -24,11 +24,11 @@ struct SequenceGap {
     std::uint64_t request_until_sequence_num = 0;
 };
 
-// convert to template later -> read_big_endian
-static std::uint64_t read_u64_big_endian(const std::uint8_t* buf,  Bytes offset) {
-    std::uint64_t converted = 0;
+template <typename T>
+static T read_big_endian(const std::uint8_t* buf,  Bytes offset) {
+    T converted = 0;
 
-    for (size_t i = 0; i < 8; ++i) {
+    for (Bytes i = 0; i < sizeof(T); ++i) {
         // shift left 8 bits
         converted = converted << 8;
 
@@ -36,24 +36,7 @@ static std::uint64_t read_u64_big_endian(const std::uint8_t* buf,  Bytes offset)
         std::uint8_t next_byte = buf[offset + i];
 
         // OR operation with lower 8 bits
-        converted = converted | static_cast<std::uint64_t>(next_byte);
-    }
-
-    return converted;
-}
-
-static std::uint16_t read_u16_big_endian(const std::uint8_t* buf,  Bytes offset) {
-    std::uint64_t converted = 0;
-
-    for (size_t i = 0; i < 2; ++i) {
-        // shift left 8 bits
-        converted = converted << 8;
-
-        // get next byte from buf
-        std::uint8_t next_byte = buf[offset + i];
-
-        // OR operation with lower 8 bits
-        converted = converted | static_cast<std::uint64_t>(next_byte);
+        converted = converted | static_cast<T>(next_byte);
     }
 
     return converted;
@@ -68,7 +51,7 @@ public:
         // MoldUDP64 header truncate check
         if (len < HEADER_LENGTH) throw PacketTruncatedError(len, HEADER_LENGTH);
 
-        Bytes curr_offset;
+        Bytes curr_offset = 0;
 
         // get first 10 bytes for session (endian conversion is not needed)
 
@@ -77,9 +60,6 @@ public:
         // get the next 2 bytes for message count (should always be 1 for now)
 
         // current_sequence_number = sequence_number + message_count
-
-        // check 
-        // if current_sequence_number >
     }
 
     void end_session() {
