@@ -25,7 +25,7 @@ struct Event {
 
 // Plant -> Subscriber API (TBD)
 struct OrderBookDelta {
-
+    
 };
 
 // use std::move later
@@ -42,6 +42,6 @@ private:
     Levels asks;
 };
 
-int main() {
+int main(int argc, char* argv[]) {
 
 }

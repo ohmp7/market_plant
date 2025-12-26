@@ -1,5 +1,22 @@
 #include <cstdint>
+#include <exception>
 #include <iostream>
+#include <string>
+
+using Bytes = std::size_t;
+
+class PacketTruncatedError : public std::exception {
+public:
+    PacketTruncatedError(Bytes received, Bytes expected)
+        : message_("Packet Truncated Error: received " + std::to_string(received) +
+                   " bytes, but was expecting >= " + std::to_string(expected)) {}
+    
+    const char* what() const noexcept override {
+        return message_.c_str();
+    }       
+private:
+    std::string message_;
+};
 
 struct SequenceGap {
     bool active = false;
@@ -15,12 +32,11 @@ public:
     void end_session() {}
 
 private:
-    static constexpr std::uint8_t SESSION_LENGTH = 10;
+    static constexpr Bytes SESSION_LENGTH = 10;
     static constexpr std::uint16_t TIMEOUT = 1000;  // ms
 
     char session[SESSION_LENGTH]{};
     std::uint64_t expected_request_sequence_num;
     SequenceGap gap;
 
-    void truncated_packet() {}
 };
