@@ -17,7 +17,6 @@ enum class Side : std::uint8_t {
 // Exchange -> Plant API
 struct Event {
     std::uint64_t sequence_number;  // for UDP
-
     InstrumentId instrument_id;
     Side side;
     Price price;  // if price dne, add a new level

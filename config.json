@@ -1,0 +1,26 @@
+{
+    "network" : {
+        "subscriber_port" : 14000,
+        "exchange_port" : 9000
+    },
+    "runtime" : {
+        "subscriber_thread_pool_size" : 4,
+        "max_subscribers" : 12
+    },
+    "instruments" : [
+        {
+            "instrument_id" : 1,
+            "symbol" : "AAPL",
+            "specifications" : {
+                "depth" : 10
+            }
+        },
+        {
+            "instrument_id" : 2,
+            "symbol" : "META",
+            "specifications" : {
+                "depth" : 5
+            }
+        }
+    ]
+} 
