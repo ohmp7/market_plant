@@ -62,7 +62,7 @@ public:
         SequenceNumber sequence_number = read_big_endian<SequenceNumber>(buf, curr_offset);
         curr_offset += sizeof(SequenceNumber);
 
-        MessageCount message_count = read_big_endian<MessageCount>(buf, curr_offset);
+        MessageCount message_count = read_big_endian<MessageCount>(buf, curr_offset);  // INVARIANT: 1 message per packet
         if (message_count == END_SESSION) message_count = 0;
         curr_offset += sizeof(MessageCount);
 
@@ -89,19 +89,28 @@ public:
         // else (packet is not ahead) -> in-order, duplicate, or old packet
             // if we were in recovery mode (request_until_sequence_num != 0)
 
-                // reset request_until_sequence_num
-                // update status to synced
-            
-            // else if the request_until_sequence_num == next_sequence_number
-
-                // reset request_until_sequence_num
-                // update status to synced
-            
-            // else
+                // if back fill (i.e., request_until_sequence_num = UNKOWN)
+                    // reset request_until_sequence_num
+                    // update status to synced
                 
-                // request the nextSequenceNumber
-        
-                // design tradeoff (detecting a gap immediately and requesting the missing range w/o storing all sequences)
+                // else if the request_until_sequence_num == next_sequence_number (gap_fill)
+
+                    // reset request_until_sequence_num
+                    // update status to synced
+                
+                // else
+                    
+                    // request the nextSequenceNumber
+            
+                    // design tradeoff (detecting a gap immediately and requesting the missing range w/o storing all sequences)
+            
+            // if session is ending
+                // end session
+            // else if sequence_number < expected_sequence_num
+                // return (i.e., old/duplicate packet)
+            // else if sequence_number == expected_sequence_num
+                // deliver message
+                // increment expected_sequence_num
         
     }           
 
