@@ -114,7 +114,8 @@ public:
         
     }           
 
-
+    void request() {}
+    
     void end_session() {
         gap.active = false;
         gap.request_until_sequence_num = 0;
