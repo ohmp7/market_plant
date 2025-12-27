@@ -27,7 +27,7 @@ private:
 };
 
 /*
-Handling Network-Byte-Order Integers
+Handling Network-Byte-Order Integers.
 */
 template <typename T>
 static T read_big_endian(const std::uint8_t* buf,  Bytes offset) {
@@ -43,6 +43,9 @@ static T read_big_endian(const std::uint8_t* buf,  Bytes offset) {
     return converted;
 }
 
+/*
+Client Handler for MoldUDP64 Network Protocol, a lightweight protocol layer built on top of UDP.
+*/
 class MoldUDP64 {
 public:
     MoldUDP64(SequenceNumber request_sequence_num_)
