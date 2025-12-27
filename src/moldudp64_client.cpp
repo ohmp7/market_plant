@@ -113,7 +113,7 @@ public:
                     request_until_sequence_num = SYNCHRONIZED;
                 
                 } else {
-                    // still in recovery state: request next in-order packet
+                    // still in recovery state: request next packet
                     request(next_sequence_number);
 
                 }
@@ -123,8 +123,6 @@ public:
            
             // In-order packet parsing (one message per event)
             if (sequence_number == next_expected_sequence_num) read();
-
-
         }
     }
 
