@@ -1,5 +1,6 @@
 #include "market_plant.h"
 
+#include <fstream>
 #include <iostream>
 #include <thread>
 #include <stdexcept>
@@ -11,7 +12,13 @@ OrderBook::OrderBook(const Depth depth_,  const InstrumentId instrument_id_)
 
 
 static void print_help() {
-
+    std::cout
+        << "Usage: market_plant -c <config_path>\n"
+        << "       market_plant --help\n"
+        << "\n"
+        << "Options:\n"
+        << "  -c, --config   Path to config file\n"
+        << "  -h, --help     Show this message\n";
 }
 
 static void parse_config(const char* path) {
