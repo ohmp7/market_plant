@@ -68,9 +68,8 @@ private:
     // network
     int sockfd_;
     sockaddr_in plantaddr_{};
-    socklen_t addrlen_ = sizeof(plantaddr_);
 
-    // To be fixed
+    // TODO: To be fixed
     static constexpr const char* plant_ip = "127.0.0.1";
     static constexpr std::uint16_t plant_port = 9001;
     static constexpr std::uint16_t exchange_port = 9000;
@@ -90,7 +89,7 @@ private:
     std::uniform_int_distribution<int> generate_id{1, 1};
     std::uniform_int_distribution<int> generate_side{0, 1};
     std::uniform_int_distribution<int> generate_event{1, 100};
-    std::uniform_int_distribution<int> generate_price{1, MAX_PRICE};
-    std::uniform_int_distribution<int> generate_quantity{1, MAX_QUANTITY};
+    std::uniform_int_distribution<Price> generate_price{1, MAX_PRICE};
+    std::uniform_int_distribution<Quantity> generate_quantity{1, MAX_QUANTITY};
     std::uniform_int_distribution<int> generate_interval{50, 100};
 };

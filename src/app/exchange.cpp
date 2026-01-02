@@ -128,8 +128,8 @@ void ExchangeSimulator::GenerateMarketEvents() {
                 quantity_to_remove = curr_quantity;
                 release_price(book, price);
             } else {
-                std::uniform_int_distribution<int> generate_quantity(0, curr_quantity - 1);
-                quantity_to_remove = generate_quantity(number_generator_);
+                std::uniform_int_distribution<Quantity> generate_quantity_to_remove(1, curr_quantity - 1);
+                quantity_to_remove = generate_quantity_to_remove(number_generator_);
             }
             it->second -= quantity_to_remove;
 
@@ -193,8 +193,8 @@ void ExchangeSimulator::enqueue_event(const MarketEvent& e, const SequenceNumber
 }
 
 Price ExchangeSimulator::pick_new_price(std::vector<Price>& avail_prices) {
-    std::uniform_int_distribution<int> generate_idx(0, avail_prices.size() - 1);
-    size_t i = generate_idx(number_generator_);
+    std::uniform_int_distribution<std::size_t> generate_idx(0, avail_prices.size() - 1);
+    std::size_t i = generate_idx(number_generator_);
 
     Price p = avail_prices[i];
     avail_prices[i] = avail_prices.back();
@@ -203,8 +203,8 @@ Price ExchangeSimulator::pick_new_price(std::vector<Price>& avail_prices) {
 }
 
 std::unordered_map<Price, Quantity>::iterator ExchangeSimulator::pick_existing_price(BookState& book) {
-    std::uniform_int_distribution<size_t> generate_it(0, book.levels.size() - 1);
-    long skip = generate_it(number_generator_);
+    std::uniform_int_distribution<std::size_t> generate_it(0, book.levels.size() - 1);
+    std::size_t skip = generate_it(number_generator_);
 
     auto it = book.levels.begin();
     std::advance(it, skip);
@@ -251,7 +251,9 @@ Bytes ExchangeSimulator::write_moldudp64_header(std::uint8_t* buf, SequenceNumbe
     write_big_endian<MessageCount>(buf, offset, MESSAGE_COUNT);
     offset += sizeof(MessageCount);
 
-    write_big_endian<MessageDataSize>(buf, offset, PACKET_SIZE - (offset + sizeof(MessageDataSize)));
+    const Bytes remaining = PACKET_SIZE - (offset + sizeof(MessageDataSize));
+    write_big_endian<MessageDataSize>(buf, offset, static_cast<MessageDataSize>(remaining));
+
     offset += sizeof(MessageDataSize);
 
     return offset;

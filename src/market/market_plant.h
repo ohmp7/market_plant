@@ -1,35 +1,37 @@
 #pragma once
 
-#include <array>
-#include <iostream>
-#include <cstdint>
-#include <unordered_map>
-#include <cstddef>
-#include <shared_mutex>
+// C++ standard (needed by member fields + function signatures)
 #include <atomic>
-#include <random>
-
-#include <grpcpp/grpcpp.h>
-#include <grpcpp/server_context.h>
-#include <grpcpp/support/status.h>
-
-#include "market_plant/market_plant.grpc.pb.h"
-#include "market_plant/market_plant.pb.h"
-#include <netinet/in.h>
-#include "market_cli.h"
-#include "moldudp64.h"
+#include <chrono>
 #include <condition_variable>
+#include <cstddef>
+#include <cstdint>
 #include <deque>
 #include <map>
+#include <memory>
 #include <mutex>
+#include <random>
+#include <shared_mutex>
+#include <string>
+#include <unordered_map>
 #include <unordered_set>
+
+
+#include <netinet/in.h>
+
+#include <grpcpp/grpcpp.h>
+#include "market_plant/market_plant.grpc.pb.h"
+
+#include "moldudp64.h"
+#include "event.h" 
+#include "market_cli.h"
 
 namespace ms = market_plant::v1;
 
 using grpc::Status;
 using grpc::ServerContext;
 using grpc::ServerWriter;
-
+using StreamResponsePtr = std::shared_ptr<const ms::StreamResponse>;
 
 class SessionGenerator {
 public:
@@ -54,9 +56,9 @@ public:
 
     void Unsubscribe(const InstrumentId id);
 
-    void Enqueue(std::shared_ptr<const ms::OrderBookUpdate> next);
+    void Enqueue(const StreamResponsePtr& next);
 
-    std::shared_ptr<const ms::OrderBookUpdate> WaitDequeue(grpc::ServerContext* ctx);
+    StreamResponsePtr WaitDequeue(grpc::ServerContext* ctx);
 
     const Identifier& get_subscriber() const { return subscriber_; }
 
@@ -66,12 +68,11 @@ private:
     std::condition_variable cv_;
     std::mutex mutex_;
     
-    // queue of Update(s) to send 
-    // TODO: Change to ms::StreamUpdates
-    std::deque<std::shared_ptr<const ms::OrderBookUpdate>> updates;
+    // queue of Update(s) to send
+    std::deque<StreamResponsePtr> updates_;
 
-    // unordered_set of instruements subscribed to
-    std::unordered_set<InstrumentId> subscribed_to;
+    // unordered_set of instruments subscribed to
+    std::unordered_set<InstrumentId> subscribed_to_;
 };
 
 
@@ -85,12 +86,13 @@ public:
         
     void RemoveOrder(Side side, Price price, Quantity quantity);
 
-    void PushEventToSubscribers(std::shared_ptr<const ms::OrderBookUpdate> event);
+    void PushEventToSubscribers(const StreamResponsePtr& event);
 
     void InitializeSubscription(std::shared_ptr<Subscriber> subscriber);
-
+    
+    void CancelSubscription(const SubscriberId id);
 private:
-    void Snapshot(ms::SnapshotUpdate &snapshot);
+    void Snapshot(ms::SnapshotUpdate* snapshot);
 
     template <class Levels>
     static void UpdateLevel(Levels &levels, Price price, Quantity quantity) {
@@ -186,14 +188,11 @@ public:
 
     void RemoveSubscriber(const SubscriberId id);
 
-    static std::shared_ptr<const ms::OrderBookUpdate> ConstructEventUpdate(const MarketEvent& e);
-
-    static std::shared_ptr<const ms::OrderBookUpdate> ConstructSnapshot(const InstrumentId id, const ms::SnapshotUpdate& s);
+    static StreamResponsePtr ConstructEventUpdate(const MarketEvent& e);
 
 private:
     static Identifier InitSubscriber();
 
-    SessionGenerator session;
     inline static std::atomic<SubscriberId> next_subscriber_id_{1};
     BookManager& books_;
 

@@ -24,6 +24,6 @@ template <typename T>
 inline void write_big_endian(std::uint8_t* buf, Bytes offset, T value) {
     for (Bytes i = 0; i < sizeof(T); ++i) {
         buf[offset + sizeof(T) - i - 1] = static_cast<uint8_t>(value & 0xFF);
-        value >>= 8;
+        if constexpr (sizeof(T) > 1) value >>= 8;
     }
 }

@@ -120,8 +120,6 @@ MessageView MoldUDP64::message_view() const { return msg; }
 
 
 void MoldUDP64::request(SequenceNumber sequence_number) {
-    assert(*request_until_sequence_num >= sequence_number); // TODO: remove later
-
     // Send a request packet for retransmission starting from 'sequence_number'
     SequenceNumber packets_remaining = *request_until_sequence_num - sequence_number;
     SequenceNumber messages_to_send = std::min<SequenceNumber>(packets_remaining, static_cast<SequenceNumber>(MAX_MESSAGE_COUNT));
