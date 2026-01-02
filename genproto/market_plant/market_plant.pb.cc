@@ -30,7 +30,7 @@ namespace v1 {
 inline constexpr SubscriberInitialization::Impl_::Impl_(
     ::_pbi::ConstantInitialized) noexcept
       : _cached_size_{0},
-        token_(
+        session_id_(
             &::google::protobuf::internal::fixed_address_empty_string,
             ::_pbi::ConstantInitialized()),
         subscriber_id_{0u} {}
@@ -163,7 +163,7 @@ PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
 inline constexpr UpdateSubscriptionRequest::Impl_::Impl_(
     ::_pbi::ConstantInitialized) noexcept
       : _cached_size_{0},
-        token_(
+        session_id_(
             &::google::protobuf::internal::fixed_address_empty_string,
             ::_pbi::ConstantInitialized()),
         change_{nullptr},
@@ -354,7 +354,7 @@ const ::uint32_t
         PROTOBUF_FIELD_OFFSET(::market_plant::v1::SubscriberInitialization, _impl_._has_bits_),
         5, // hasbit index offset
         PROTOBUF_FIELD_OFFSET(::market_plant::v1::SubscriberInitialization, _impl_.subscriber_id_),
-        PROTOBUF_FIELD_OFFSET(::market_plant::v1::SubscriberInitialization, _impl_.token_),
+        PROTOBUF_FIELD_OFFSET(::market_plant::v1::SubscriberInitialization, _impl_.session_id_),
         1,
         0,
         0x004, // bitmap
@@ -366,7 +366,7 @@ const ::uint32_t
         PROTOBUF_FIELD_OFFSET(::market_plant::v1::UpdateSubscriptionRequest, _impl_._has_bits_),
         6, // hasbit index offset
         PROTOBUF_FIELD_OFFSET(::market_plant::v1::UpdateSubscriptionRequest, _impl_.subscriber_id_),
-        PROTOBUF_FIELD_OFFSET(::market_plant::v1::UpdateSubscriptionRequest, _impl_.token_),
+        PROTOBUF_FIELD_OFFSET(::market_plant::v1::UpdateSubscriptionRequest, _impl_.session_id_),
         PROTOBUF_FIELD_OFFSET(::market_plant::v1::UpdateSubscriptionRequest, _impl_.change_),
         2,
         0,
@@ -420,23 +420,24 @@ const char descriptor_table_protodef_market_5fplant_2fmarket_5fplant_2eproto[] A
     "scription\0223\n\tsubscribe\030\001 \001(\0132\036.market_pl"
     "ant.v1.InstrumentIdsH\000\0225\n\013unsubscribe\030\002 "
     "\001(\0132\036.market_plant.v1.InstrumentIdsH\000B\010\n"
-    "\006action\"@\n\030SubscriberInitialization\022\025\n\rs"
-    "ubscriber_id\030\001 \001(\r\022\r\n\005token\030\002 \001(\014\"\212\001\n\016St"
-    "reamResponse\0229\n\004init\030\001 \001(\0132).market_plan"
-    "t.v1.SubscriberInitializationH\000\0222\n\006updat"
-    "e\030\002 \001(\0132 .market_plant.v1.OrderBookUpdat"
-    "eH\000B\t\n\007payload\"p\n\031UpdateSubscriptionRequ"
-    "est\022\025\n\rsubscriber_id\030\001 \001(\r\022\r\n\005token\030\002 \001("
-    "\014\022-\n\006change\030\003 \001(\0132\035.market_plant.v1.Subs"
-    "cription*.\n\004Side\022\024\n\020SIDE_UNSPECIFIED\020\000\022\007"
-    "\n\003BID\020\001\022\007\n\003ASK\020\002*_\n\022OrderBookEventType\022\025"
-    "\n\021EVENT_UNSPECIFIED\020\000\022\r\n\tADD_LEVEL\020\001\022\021\n\r"
-    "REPLACE_LEVEL\020\002\022\020\n\014REMOVE_LEVEL\020\0032\302\001\n\022Ma"
-    "rketPlantService\022Q\n\rStreamUpdates\022\035.mark"
-    "et_plant.v1.Subscription\032\037.market_plant."
-    "v1.StreamResponse0\001\022Y\n\023UpdateSubscriptio"
-    "ns\022*.market_plant.v1.UpdateSubscriptionR"
-    "equest\032\026.google.protobuf.Emptyb\006proto3"
+    "\006action\"E\n\030SubscriberInitialization\022\025\n\rs"
+    "ubscriber_id\030\001 \001(\r\022\022\n\nsession_id\030\002 \001(\014\"\212"
+    "\001\n\016StreamResponse\0229\n\004init\030\001 \001(\0132).market"
+    "_plant.v1.SubscriberInitializationH\000\0222\n\006"
+    "update\030\002 \001(\0132 .market_plant.v1.OrderBook"
+    "UpdateH\000B\t\n\007payload\"u\n\031UpdateSubscriptio"
+    "nRequest\022\025\n\rsubscriber_id\030\001 \001(\r\022\022\n\nsessi"
+    "on_id\030\002 \001(\014\022-\n\006change\030\003 \001(\0132\035.market_pla"
+    "nt.v1.Subscription*.\n\004Side\022\024\n\020SIDE_UNSPE"
+    "CIFIED\020\000\022\007\n\003BID\020\001\022\007\n\003ASK\020\002*_\n\022OrderBookE"
+    "ventType\022\025\n\021EVENT_UNSPECIFIED\020\000\022\r\n\tADD_L"
+    "EVEL\020\001\022\021\n\rREPLACE_LEVEL\020\002\022\020\n\014REMOVE_LEVE"
+    "L\020\0032\302\001\n\022MarketPlantService\022Q\n\rStreamUpda"
+    "tes\022\035.market_plant.v1.Subscription\032\037.mar"
+    "ket_plant.v1.StreamResponse0\001\022Y\n\023UpdateS"
+    "ubscriptions\022*.market_plant.v1.UpdateSub"
+    "scriptionRequest\032\026.google.protobuf.Empty"
+    "b\006proto3"
 };
 static const ::_pbi::DescriptorTable* PROTOBUF_NONNULL const
     descriptor_table_market_5fplant_2fmarket_5fplant_2eproto_deps[1] = {
@@ -446,7 +447,7 @@ static ::absl::once_flag descriptor_table_market_5fplant_2fmarket_5fplant_2eprot
 PROTOBUF_CONSTINIT const ::_pbi::DescriptorTable descriptor_table_market_5fplant_2fmarket_5fplant_2eproto = {
     false,
     false,
-    1478,
+    1488,
     descriptor_table_protodef_market_5fplant_2fmarket_5fplant_2eproto,
     "market_plant/market_plant.proto",
     &descriptor_table_market_5fplant_2fmarket_5fplant_2eproto_once,
@@ -2789,7 +2790,7 @@ PROTOBUF_NDEBUG_INLINE SubscriberInitialization::Impl_::Impl_(
     [[maybe_unused]] const ::market_plant::v1::SubscriberInitialization& from_msg)
       : _has_bits_{from._has_bits_},
         _cached_size_{0},
-        token_(arena, from.token_) {}
+        session_id_(arena, from.session_id_) {}
 
 SubscriberInitialization::SubscriberInitialization(
     ::google::protobuf::Arena* PROTOBUF_NULLABLE arena,
@@ -2812,7 +2813,7 @@ PROTOBUF_NDEBUG_INLINE SubscriberInitialization::Impl_::Impl_(
     [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
     [[maybe_unused]] ::google::protobuf::Arena* PROTOBUF_NULLABLE arena)
       : _cached_size_{0},
-        token_(arena) {}
+        session_id_(arena) {}
 
 inline void SubscriberInitialization::SharedCtor(::_pb::Arena* PROTOBUF_NULLABLE arena) {
   new (&_impl_) Impl_(internal_visibility(), arena);
@@ -2829,7 +2830,7 @@ inline void SubscriberInitialization::SharedDtor(MessageLite& self) {
   }
   this_._internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
   ABSL_DCHECK(this_.GetArena() == nullptr);
-  this_._impl_.token_.Destroy();
+  this_._impl_.session_id_.Destroy();
   this_._impl_.~Impl_();
 }
 
@@ -2895,10 +2896,10 @@ SubscriberInitialization::_table_ = {
     ::_pbi::TcParser::GetTable<::market_plant::v1::SubscriberInitialization>(),  // to_prefetch
     #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
   }, {{
-    // bytes token = 2;
+    // bytes session_id = 2;
     {::_pbi::TcParser::FastBS1,
      {18, 0, 0,
-      PROTOBUF_FIELD_OFFSET(SubscriberInitialization, _impl_.token_)}},
+      PROTOBUF_FIELD_OFFSET(SubscriberInitialization, _impl_.session_id_)}},
     // uint32 subscriber_id = 1;
     {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(SubscriberInitialization, _impl_.subscriber_id_), 1>(),
      {8, 1, 0,
@@ -2908,8 +2909,8 @@ SubscriberInitialization::_table_ = {
   }}, {{
     // uint32 subscriber_id = 1;
     {PROTOBUF_FIELD_OFFSET(SubscriberInitialization, _impl_.subscriber_id_), _Internal::kHasBitsOffset + 1, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
-    // bytes token = 2;
-    {PROTOBUF_FIELD_OFFSET(SubscriberInitialization, _impl_.token_), _Internal::kHasBitsOffset + 0, 0, (0 | ::_fl::kFcOptional | ::_fl::kBytes | ::_fl::kRepAString)},
+    // bytes session_id = 2;
+    {PROTOBUF_FIELD_OFFSET(SubscriberInitialization, _impl_.session_id_), _Internal::kHasBitsOffset + 0, 0, (0 | ::_fl::kFcOptional | ::_fl::kBytes | ::_fl::kRepAString)},
   }},
   // no aux_entries
   {{
@@ -2924,7 +2925,7 @@ PROTOBUF_NOINLINE void SubscriberInitialization::Clear() {
 
   cached_has_bits = _impl_._has_bits_[0];
   if (CheckHasBit(cached_has_bits, 0x00000001U)) {
-    _impl_.token_.ClearNonDefaultToEmpty();
+    _impl_.session_id_.ClearNonDefaultToEmpty();
   }
   _impl_.subscriber_id_ = 0u;
   _impl_._has_bits_.Clear();
@@ -2959,10 +2960,10 @@ PROTOBUF_NOINLINE void SubscriberInitialization::Clear() {
     }
   }
 
-  // bytes token = 2;
+  // bytes session_id = 2;
   if (CheckHasBit(cached_has_bits, 0x00000001U)) {
-    if (!this_._internal_token().empty()) {
-      const ::std::string& _s = this_._internal_token();
+    if (!this_._internal_session_id().empty()) {
+      const ::std::string& _s = this_._internal_session_id();
       target = stream->WriteBytesMaybeAliased(2, _s, target);
     }
   }
@@ -2993,11 +2994,11 @@ PROTOBUF_NOINLINE void SubscriberInitialization::Clear() {
   ::_pbi::Prefetch5LinesFrom7Lines(&this_);
   cached_has_bits = this_._impl_._has_bits_[0];
   if (BatchCheckHasBit(cached_has_bits, 0x00000003U)) {
-    // bytes token = 2;
+    // bytes session_id = 2;
     if (CheckHasBit(cached_has_bits, 0x00000001U)) {
-      if (!this_._internal_token().empty()) {
+      if (!this_._internal_session_id().empty()) {
         total_size += 1 + ::google::protobuf::internal::WireFormatLite::BytesSize(
-                                        this_._internal_token());
+                                        this_._internal_session_id());
       }
     }
     // uint32 subscriber_id = 1;
@@ -3028,11 +3029,11 @@ void SubscriberInitialization::MergeImpl(::google::protobuf::MessageLite& to_msg
   cached_has_bits = from._impl_._has_bits_[0];
   if (BatchCheckHasBit(cached_has_bits, 0x00000003U)) {
     if (CheckHasBit(cached_has_bits, 0x00000001U)) {
-      if (!from._internal_token().empty()) {
-        _this->_internal_set_token(from._internal_token());
+      if (!from._internal_session_id().empty()) {
+        _this->_internal_set_session_id(from._internal_session_id());
       } else {
-        if (_this->_impl_.token_.IsDefault()) {
-          _this->_internal_set_token("");
+        if (_this->_impl_.session_id_.IsDefault()) {
+          _this->_internal_set_session_id("");
         }
       }
     }
@@ -3061,7 +3062,7 @@ void SubscriberInitialization::InternalSwap(SubscriberInitialization* PROTOBUF_R
   ABSL_DCHECK_EQ(arena, other->GetArena());
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
-  ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.token_, &other->_impl_.token_, arena);
+  ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.session_id_, &other->_impl_.session_id_, arena);
   swap(_impl_.subscriber_id_, other->_impl_.subscriber_id_);
 }
 
@@ -3460,7 +3461,7 @@ PROTOBUF_NDEBUG_INLINE UpdateSubscriptionRequest::Impl_::Impl_(
     [[maybe_unused]] const ::market_plant::v1::UpdateSubscriptionRequest& from_msg)
       : _has_bits_{from._has_bits_},
         _cached_size_{0},
-        token_(arena, from.token_) {}
+        session_id_(arena, from.session_id_) {}
 
 UpdateSubscriptionRequest::UpdateSubscriptionRequest(
     ::google::protobuf::Arena* PROTOBUF_NULLABLE arena,
@@ -3487,7 +3488,7 @@ PROTOBUF_NDEBUG_INLINE UpdateSubscriptionRequest::Impl_::Impl_(
     [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
     [[maybe_unused]] ::google::protobuf::Arena* PROTOBUF_NULLABLE arena)
       : _cached_size_{0},
-        token_(arena) {}
+        session_id_(arena) {}
 
 inline void UpdateSubscriptionRequest::SharedCtor(::_pb::Arena* PROTOBUF_NULLABLE arena) {
   new (&_impl_) Impl_(internal_visibility(), arena);
@@ -3509,7 +3510,7 @@ inline void UpdateSubscriptionRequest::SharedDtor(MessageLite& self) {
   }
   this_._internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
   ABSL_DCHECK(this_.GetArena() == nullptr);
-  this_._impl_.token_.Destroy();
+  this_._impl_.session_id_.Destroy();
   delete this_._impl_.change_;
   this_._impl_.~Impl_();
 }
@@ -3581,10 +3582,10 @@ UpdateSubscriptionRequest::_table_ = {
     {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(UpdateSubscriptionRequest, _impl_.subscriber_id_), 2>(),
      {8, 2, 0,
       PROTOBUF_FIELD_OFFSET(UpdateSubscriptionRequest, _impl_.subscriber_id_)}},
-    // bytes token = 2;
+    // bytes session_id = 2;
     {::_pbi::TcParser::FastBS1,
      {18, 0, 0,
-      PROTOBUF_FIELD_OFFSET(UpdateSubscriptionRequest, _impl_.token_)}},
+      PROTOBUF_FIELD_OFFSET(UpdateSubscriptionRequest, _impl_.session_id_)}},
     // .market_plant.v1.Subscription change = 3;
     {::_pbi::TcParser::FastMtS1,
      {26, 1, 0,
@@ -3594,8 +3595,8 @@ UpdateSubscriptionRequest::_table_ = {
   }}, {{
     // uint32 subscriber_id = 1;
     {PROTOBUF_FIELD_OFFSET(UpdateSubscriptionRequest, _impl_.subscriber_id_), _Internal::kHasBitsOffset + 2, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
-    // bytes token = 2;
-    {PROTOBUF_FIELD_OFFSET(UpdateSubscriptionRequest, _impl_.token_), _Internal::kHasBitsOffset + 0, 0, (0 | ::_fl::kFcOptional | ::_fl::kBytes | ::_fl::kRepAString)},
+    // bytes session_id = 2;
+    {PROTOBUF_FIELD_OFFSET(UpdateSubscriptionRequest, _impl_.session_id_), _Internal::kHasBitsOffset + 0, 0, (0 | ::_fl::kFcOptional | ::_fl::kBytes | ::_fl::kRepAString)},
     // .market_plant.v1.Subscription change = 3;
     {PROTOBUF_FIELD_OFFSET(UpdateSubscriptionRequest, _impl_.change_), _Internal::kHasBitsOffset + 1, 0, (0 | ::_fl::kFcOptional | ::_fl::kMessage | ::_fl::kTvTable)},
   }},
@@ -3615,7 +3616,7 @@ PROTOBUF_NOINLINE void UpdateSubscriptionRequest::Clear() {
   cached_has_bits = _impl_._has_bits_[0];
   if (BatchCheckHasBit(cached_has_bits, 0x00000003U)) {
     if (CheckHasBit(cached_has_bits, 0x00000001U)) {
-      _impl_.token_.ClearNonDefaultToEmpty();
+      _impl_.session_id_.ClearNonDefaultToEmpty();
     }
     if (CheckHasBit(cached_has_bits, 0x00000002U)) {
       ABSL_DCHECK(_impl_.change_ != nullptr);
@@ -3655,10 +3656,10 @@ PROTOBUF_NOINLINE void UpdateSubscriptionRequest::Clear() {
     }
   }
 
-  // bytes token = 2;
+  // bytes session_id = 2;
   if (CheckHasBit(cached_has_bits, 0x00000001U)) {
-    if (!this_._internal_token().empty()) {
-      const ::std::string& _s = this_._internal_token();
+    if (!this_._internal_session_id().empty()) {
+      const ::std::string& _s = this_._internal_session_id();
       target = stream->WriteBytesMaybeAliased(2, _s, target);
     }
   }
@@ -3696,11 +3697,11 @@ PROTOBUF_NOINLINE void UpdateSubscriptionRequest::Clear() {
   ::_pbi::Prefetch5LinesFrom7Lines(&this_);
   cached_has_bits = this_._impl_._has_bits_[0];
   if (BatchCheckHasBit(cached_has_bits, 0x00000007U)) {
-    // bytes token = 2;
+    // bytes session_id = 2;
     if (CheckHasBit(cached_has_bits, 0x00000001U)) {
-      if (!this_._internal_token().empty()) {
+      if (!this_._internal_session_id().empty()) {
         total_size += 1 + ::google::protobuf::internal::WireFormatLite::BytesSize(
-                                        this_._internal_token());
+                                        this_._internal_session_id());
       }
     }
     // .market_plant.v1.Subscription change = 3;
@@ -3737,11 +3738,11 @@ void UpdateSubscriptionRequest::MergeImpl(::google::protobuf::MessageLite& to_ms
   cached_has_bits = from._impl_._has_bits_[0];
   if (BatchCheckHasBit(cached_has_bits, 0x00000007U)) {
     if (CheckHasBit(cached_has_bits, 0x00000001U)) {
-      if (!from._internal_token().empty()) {
-        _this->_internal_set_token(from._internal_token());
+      if (!from._internal_session_id().empty()) {
+        _this->_internal_set_session_id(from._internal_session_id());
       } else {
-        if (_this->_impl_.token_.IsDefault()) {
-          _this->_internal_set_token("");
+        if (_this->_impl_.session_id_.IsDefault()) {
+          _this->_internal_set_session_id("");
         }
       }
     }
@@ -3778,7 +3779,7 @@ void UpdateSubscriptionRequest::InternalSwap(UpdateSubscriptionRequest* PROTOBUF
   ABSL_DCHECK_EQ(arena, other->GetArena());
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
-  ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.token_, &other->_impl_.token_, arena);
+  ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.session_id_, &other->_impl_.session_id_, arena);
   ::google::protobuf::internal::memswap<
       PROTOBUF_FIELD_OFFSET(UpdateSubscriptionRequest, _impl_.subscriber_id_)
       + sizeof(UpdateSubscriptionRequest::_impl_.subscriber_id_)

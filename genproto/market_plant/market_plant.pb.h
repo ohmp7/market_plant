@@ -338,22 +338,22 @@ class SubscriberInitialization final : public ::google::protobuf::Message
 
   // accessors -------------------------------------------------------
   enum : int {
-    kTokenFieldNumber = 2,
+    kSessionIdFieldNumber = 2,
     kSubscriberIdFieldNumber = 1,
   };
-  // bytes token = 2;
-  void clear_token() ;
-  const ::std::string& token() const;
+  // bytes session_id = 2;
+  void clear_session_id() ;
+  const ::std::string& session_id() const;
   template <typename Arg_ = const ::std::string&, typename... Args_>
-  void set_token(Arg_&& arg, Args_... args);
-  ::std::string* PROTOBUF_NONNULL mutable_token();
-  [[nodiscard]] ::std::string* PROTOBUF_NULLABLE release_token();
-  void set_allocated_token(::std::string* PROTOBUF_NULLABLE value);
+  void set_session_id(Arg_&& arg, Args_... args);
+  ::std::string* PROTOBUF_NONNULL mutable_session_id();
+  [[nodiscard]] ::std::string* PROTOBUF_NULLABLE release_session_id();
+  void set_allocated_session_id(::std::string* PROTOBUF_NULLABLE value);
 
   private:
-  const ::std::string& _internal_token() const;
-  PROTOBUF_ALWAYS_INLINE void _internal_set_token(const ::std::string& value);
-  ::std::string* PROTOBUF_NONNULL _internal_mutable_token();
+  const ::std::string& _internal_session_id() const;
+  PROTOBUF_ALWAYS_INLINE void _internal_set_session_id(const ::std::string& value);
+  ::std::string* PROTOBUF_NONNULL _internal_mutable_session_id();
 
   public:
   // uint32 subscriber_id = 1;
@@ -392,7 +392,7 @@ class SubscriberInitialization final : public ::google::protobuf::Message
         const SubscriberInitialization& from_msg);
     ::google::protobuf::internal::HasBits<1> _has_bits_;
     ::google::protobuf::internal::CachedSize _cached_size_;
-    ::google::protobuf::internal::ArenaStringPtr token_;
+    ::google::protobuf::internal::ArenaStringPtr session_id_;
     ::uint32_t subscriber_id_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
@@ -1400,23 +1400,23 @@ class UpdateSubscriptionRequest final : public ::google::protobuf::Message
 
   // accessors -------------------------------------------------------
   enum : int {
-    kTokenFieldNumber = 2,
+    kSessionIdFieldNumber = 2,
     kChangeFieldNumber = 3,
     kSubscriberIdFieldNumber = 1,
   };
-  // bytes token = 2;
-  void clear_token() ;
-  const ::std::string& token() const;
+  // bytes session_id = 2;
+  void clear_session_id() ;
+  const ::std::string& session_id() const;
   template <typename Arg_ = const ::std::string&, typename... Args_>
-  void set_token(Arg_&& arg, Args_... args);
-  ::std::string* PROTOBUF_NONNULL mutable_token();
-  [[nodiscard]] ::std::string* PROTOBUF_NULLABLE release_token();
-  void set_allocated_token(::std::string* PROTOBUF_NULLABLE value);
+  void set_session_id(Arg_&& arg, Args_... args);
+  ::std::string* PROTOBUF_NONNULL mutable_session_id();
+  [[nodiscard]] ::std::string* PROTOBUF_NULLABLE release_session_id();
+  void set_allocated_session_id(::std::string* PROTOBUF_NULLABLE value);
 
   private:
-  const ::std::string& _internal_token() const;
-  PROTOBUF_ALWAYS_INLINE void _internal_set_token(const ::std::string& value);
-  ::std::string* PROTOBUF_NONNULL _internal_mutable_token();
+  const ::std::string& _internal_session_id() const;
+  PROTOBUF_ALWAYS_INLINE void _internal_set_session_id(const ::std::string& value);
+  ::std::string* PROTOBUF_NONNULL _internal_mutable_session_id();
 
   public:
   // .market_plant.v1.Subscription change = 3;
@@ -1470,7 +1470,7 @@ class UpdateSubscriptionRequest final : public ::google::protobuf::Message
         const UpdateSubscriptionRequest& from_msg);
     ::google::protobuf::internal::HasBits<1> _has_bits_;
     ::google::protobuf::internal::CachedSize _cached_size_;
-    ::google::protobuf::internal::ArenaStringPtr token_;
+    ::google::protobuf::internal::ArenaStringPtr session_id_;
     ::market_plant::v1::Subscription* PROTOBUF_NULLABLE change_;
     ::uint32_t subscriber_id_;
     PROTOBUF_TSAN_DECLARE_MEMBER
@@ -3275,69 +3275,69 @@ inline void SubscriberInitialization::_internal_set_subscriber_id(::uint32_t val
   _impl_.subscriber_id_ = value;
 }
 
-// bytes token = 2;
-inline void SubscriberInitialization::clear_token() {
+// bytes session_id = 2;
+inline void SubscriberInitialization::clear_session_id() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
-  _impl_.token_.ClearToEmpty();
+  _impl_.session_id_.ClearToEmpty();
   ClearHasBit(_impl_._has_bits_[0],
                   0x00000001U);
 }
-inline const ::std::string& SubscriberInitialization::token() const
+inline const ::std::string& SubscriberInitialization::session_id() const
     ABSL_ATTRIBUTE_LIFETIME_BOUND {
-  // @@protoc_insertion_point(field_get:market_plant.v1.SubscriberInitialization.token)
-  return _internal_token();
+  // @@protoc_insertion_point(field_get:market_plant.v1.SubscriberInitialization.session_id)
+  return _internal_session_id();
 }
 template <typename Arg_, typename... Args_>
-PROTOBUF_ALWAYS_INLINE void SubscriberInitialization::set_token(Arg_&& arg, Args_... args) {
+PROTOBUF_ALWAYS_INLINE void SubscriberInitialization::set_session_id(Arg_&& arg, Args_... args) {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   SetHasBit(_impl_._has_bits_[0], 0x00000001U);
-  _impl_.token_.SetBytes(static_cast<Arg_&&>(arg), args..., GetArena());
-  // @@protoc_insertion_point(field_set:market_plant.v1.SubscriberInitialization.token)
+  _impl_.session_id_.SetBytes(static_cast<Arg_&&>(arg), args..., GetArena());
+  // @@protoc_insertion_point(field_set:market_plant.v1.SubscriberInitialization.session_id)
 }
-inline ::std::string* PROTOBUF_NONNULL SubscriberInitialization::mutable_token()
+inline ::std::string* PROTOBUF_NONNULL SubscriberInitialization::mutable_session_id()
     ABSL_ATTRIBUTE_LIFETIME_BOUND {
   SetHasBit(_impl_._has_bits_[0], 0x00000001U);
-  ::std::string* _s = _internal_mutable_token();
-  // @@protoc_insertion_point(field_mutable:market_plant.v1.SubscriberInitialization.token)
+  ::std::string* _s = _internal_mutable_session_id();
+  // @@protoc_insertion_point(field_mutable:market_plant.v1.SubscriberInitialization.session_id)
   return _s;
 }
-inline const ::std::string& SubscriberInitialization::_internal_token() const {
+inline const ::std::string& SubscriberInitialization::_internal_session_id() const {
   ::google::protobuf::internal::TSanRead(&_impl_);
-  return _impl_.token_.Get();
+  return _impl_.session_id_.Get();
 }
-inline void SubscriberInitialization::_internal_set_token(const ::std::string& value) {
+inline void SubscriberInitialization::_internal_set_session_id(const ::std::string& value) {
   ::google::protobuf::internal::TSanWrite(&_impl_);
-  _impl_.token_.Set(value, GetArena());
+  _impl_.session_id_.Set(value, GetArena());
 }
-inline ::std::string* PROTOBUF_NONNULL SubscriberInitialization::_internal_mutable_token() {
+inline ::std::string* PROTOBUF_NONNULL SubscriberInitialization::_internal_mutable_session_id() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
-  return _impl_.token_.Mutable( GetArena());
+  return _impl_.session_id_.Mutable( GetArena());
 }
-inline ::std::string* PROTOBUF_NULLABLE SubscriberInitialization::release_token() {
+inline ::std::string* PROTOBUF_NULLABLE SubscriberInitialization::release_session_id() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
-  // @@protoc_insertion_point(field_release:market_plant.v1.SubscriberInitialization.token)
+  // @@protoc_insertion_point(field_release:market_plant.v1.SubscriberInitialization.session_id)
   if (!CheckHasBit(_impl_._has_bits_[0], 0x00000001U)) {
     return nullptr;
   }
   ClearHasBit(_impl_._has_bits_[0], 0x00000001U);
-  auto* released = _impl_.token_.Release();
+  auto* released = _impl_.session_id_.Release();
   if (::google::protobuf::internal::DebugHardenForceCopyDefaultString()) {
-    _impl_.token_.Set("", GetArena());
+    _impl_.session_id_.Set("", GetArena());
   }
   return released;
 }
-inline void SubscriberInitialization::set_allocated_token(::std::string* PROTOBUF_NULLABLE value) {
+inline void SubscriberInitialization::set_allocated_session_id(::std::string* PROTOBUF_NULLABLE value) {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   if (value != nullptr) {
     SetHasBit(_impl_._has_bits_[0], 0x00000001U);
   } else {
     ClearHasBit(_impl_._has_bits_[0], 0x00000001U);
   }
-  _impl_.token_.SetAllocated(value, GetArena());
-  if (::google::protobuf::internal::DebugHardenForceCopyDefaultString() && _impl_.token_.IsDefault()) {
-    _impl_.token_.Set("", GetArena());
+  _impl_.session_id_.SetAllocated(value, GetArena());
+  if (::google::protobuf::internal::DebugHardenForceCopyDefaultString() && _impl_.session_id_.IsDefault()) {
+    _impl_.session_id_.Set("", GetArena());
   }
-  // @@protoc_insertion_point(field_set_allocated:market_plant.v1.SubscriberInitialization.token)
+  // @@protoc_insertion_point(field_set_allocated:market_plant.v1.SubscriberInitialization.session_id)
 }
 
 // -------------------------------------------------------------------
@@ -3546,69 +3546,69 @@ inline void UpdateSubscriptionRequest::_internal_set_subscriber_id(::uint32_t va
   _impl_.subscriber_id_ = value;
 }
 
-// bytes token = 2;
-inline void UpdateSubscriptionRequest::clear_token() {
+// bytes session_id = 2;
+inline void UpdateSubscriptionRequest::clear_session_id() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
-  _impl_.token_.ClearToEmpty();
+  _impl_.session_id_.ClearToEmpty();
   ClearHasBit(_impl_._has_bits_[0],
                   0x00000001U);
 }
-inline const ::std::string& UpdateSubscriptionRequest::token() const
+inline const ::std::string& UpdateSubscriptionRequest::session_id() const
     ABSL_ATTRIBUTE_LIFETIME_BOUND {
-  // @@protoc_insertion_point(field_get:market_plant.v1.UpdateSubscriptionRequest.token)
-  return _internal_token();
+  // @@protoc_insertion_point(field_get:market_plant.v1.UpdateSubscriptionRequest.session_id)
+  return _internal_session_id();
 }
 template <typename Arg_, typename... Args_>
-PROTOBUF_ALWAYS_INLINE void UpdateSubscriptionRequest::set_token(Arg_&& arg, Args_... args) {
+PROTOBUF_ALWAYS_INLINE void UpdateSubscriptionRequest::set_session_id(Arg_&& arg, Args_... args) {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   SetHasBit(_impl_._has_bits_[0], 0x00000001U);
-  _impl_.token_.SetBytes(static_cast<Arg_&&>(arg), args..., GetArena());
-  // @@protoc_insertion_point(field_set:market_plant.v1.UpdateSubscriptionRequest.token)
+  _impl_.session_id_.SetBytes(static_cast<Arg_&&>(arg), args..., GetArena());
+  // @@protoc_insertion_point(field_set:market_plant.v1.UpdateSubscriptionRequest.session_id)
 }
-inline ::std::string* PROTOBUF_NONNULL UpdateSubscriptionRequest::mutable_token()
+inline ::std::string* PROTOBUF_NONNULL UpdateSubscriptionRequest::mutable_session_id()
     ABSL_ATTRIBUTE_LIFETIME_BOUND {
   SetHasBit(_impl_._has_bits_[0], 0x00000001U);
-  ::std::string* _s = _internal_mutable_token();
-  // @@protoc_insertion_point(field_mutable:market_plant.v1.UpdateSubscriptionRequest.token)
+  ::std::string* _s = _internal_mutable_session_id();
+  // @@protoc_insertion_point(field_mutable:market_plant.v1.UpdateSubscriptionRequest.session_id)
   return _s;
 }
-inline const ::std::string& UpdateSubscriptionRequest::_internal_token() const {
+inline const ::std::string& UpdateSubscriptionRequest::_internal_session_id() const {
   ::google::protobuf::internal::TSanRead(&_impl_);
-  return _impl_.token_.Get();
+  return _impl_.session_id_.Get();
 }
-inline void UpdateSubscriptionRequest::_internal_set_token(const ::std::string& value) {
+inline void UpdateSubscriptionRequest::_internal_set_session_id(const ::std::string& value) {
   ::google::protobuf::internal::TSanWrite(&_impl_);
-  _impl_.token_.Set(value, GetArena());
+  _impl_.session_id_.Set(value, GetArena());
 }
-inline ::std::string* PROTOBUF_NONNULL UpdateSubscriptionRequest::_internal_mutable_token() {
+inline ::std::string* PROTOBUF_NONNULL UpdateSubscriptionRequest::_internal_mutable_session_id() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
-  return _impl_.token_.Mutable( GetArena());
+  return _impl_.session_id_.Mutable( GetArena());
 }
-inline ::std::string* PROTOBUF_NULLABLE UpdateSubscriptionRequest::release_token() {
+inline ::std::string* PROTOBUF_NULLABLE UpdateSubscriptionRequest::release_session_id() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
-  // @@protoc_insertion_point(field_release:market_plant.v1.UpdateSubscriptionRequest.token)
+  // @@protoc_insertion_point(field_release:market_plant.v1.UpdateSubscriptionRequest.session_id)
   if (!CheckHasBit(_impl_._has_bits_[0], 0x00000001U)) {
     return nullptr;
   }
   ClearHasBit(_impl_._has_bits_[0], 0x00000001U);
-  auto* released = _impl_.token_.Release();
+  auto* released = _impl_.session_id_.Release();
   if (::google::protobuf::internal::DebugHardenForceCopyDefaultString()) {
-    _impl_.token_.Set("", GetArena());
+    _impl_.session_id_.Set("", GetArena());
   }
   return released;
 }
-inline void UpdateSubscriptionRequest::set_allocated_token(::std::string* PROTOBUF_NULLABLE value) {
+inline void UpdateSubscriptionRequest::set_allocated_session_id(::std::string* PROTOBUF_NULLABLE value) {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   if (value != nullptr) {
     SetHasBit(_impl_._has_bits_[0], 0x00000001U);
   } else {
     ClearHasBit(_impl_._has_bits_[0], 0x00000001U);
   }
-  _impl_.token_.SetAllocated(value, GetArena());
-  if (::google::protobuf::internal::DebugHardenForceCopyDefaultString() && _impl_.token_.IsDefault()) {
-    _impl_.token_.Set("", GetArena());
+  _impl_.session_id_.SetAllocated(value, GetArena());
+  if (::google::protobuf::internal::DebugHardenForceCopyDefaultString() && _impl_.session_id_.IsDefault()) {
+    _impl_.session_id_.Set("", GetArena());
   }
-  // @@protoc_insertion_point(field_set_allocated:market_plant.v1.UpdateSubscriptionRequest.token)
+  // @@protoc_insertion_point(field_set_allocated:market_plant.v1.UpdateSubscriptionRequest.session_id)
 }
 
 // .market_plant.v1.Subscription change = 3;

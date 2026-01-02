@@ -82,3 +82,8 @@ enable_warnings(exchange)
 # Subscriber Executable
 add_executable(subscriber src/app/subscriber.cpp)
 enable_warnings(subscriber)
+target_link_libraries(subscriber PRIVATE ${GENPROTO_LIB})
+target_include_directories(subscriber PRIVATE ${GENPROTO_DIR})
+target_include_directories(subscriber PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/market)
+enable_warnings(subscriber)
+

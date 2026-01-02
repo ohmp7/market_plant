@@ -131,7 +131,8 @@ void ExchangeSimulator::GenerateMarketEvents() {
                 std::uniform_int_distribution<int> generate_quantity(0, curr_quantity - 1);
                 quantity_to_remove = generate_quantity(number_generator_);
             }
-            
+            it->second -= quantity_to_remove;
+
             e.instrument_id = id;
             e.side = side;
             e.event = LevelEvent::ModifyLevel;
@@ -201,7 +202,7 @@ Price ExchangeSimulator::pick_new_price(std::vector<Price>& avail_prices) {
     return p;
 }
 
-std::unordered_map<Price, Quantity>::const_iterator ExchangeSimulator::pick_existing_price(const BookState& book) {
+std::unordered_map<Price, Quantity>::iterator ExchangeSimulator::pick_existing_price(BookState& book) {
     std::uniform_int_distribution<size_t> generate_it(0, book.levels.size() - 1);
     long skip = generate_it(number_generator_);
 

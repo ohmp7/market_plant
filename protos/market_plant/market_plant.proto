@@ -62,7 +62,7 @@ message Subscription {
 
 message SubscriberInitialization {
     uint32 subscriber_id = 1;
-    bytes token = 2;
+    bytes session_id = 2;
 }
 
 message StreamResponse {
@@ -74,7 +74,7 @@ message StreamResponse {
 
 message UpdateSubscriptionRequest {
     uint32 subscriber_id = 1;
-    bytes token = 2;
+    bytes session_id = 2;
     Subscription change = 3;
 }
 

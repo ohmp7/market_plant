@@ -52,7 +52,7 @@ private:
 
     Price pick_new_price(std::vector<Price>& avail_prices);
 
-    std::unordered_map<Price, Quantity>::const_iterator pick_existing_price(const BookState& book);
+    std::unordered_map<Price, Quantity>::iterator pick_existing_price(BookState& book);
     
     void release_price(BookState& book, const Price price_to_release);
 
@@ -92,5 +92,5 @@ private:
     std::uniform_int_distribution<int> generate_event{1, 100};
     std::uniform_int_distribution<int> generate_price{1, MAX_PRICE};
     std::uniform_int_distribution<int> generate_quantity{1, MAX_QUANTITY};
-    std::uniform_int_distribution<int> generate_interval{1, 250};
+    std::uniform_int_distribution<int> generate_interval{50, 100};
 };

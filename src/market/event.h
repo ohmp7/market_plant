@@ -13,6 +13,7 @@ using Depth = std::size_t;
 using Price = std::uint32_t;
 using Quantity = std::uint32_t;
 using InstrumentId = std::uint32_t;
+using SubscriberId = std::uint32_t;
 using Timestamp = std::uint64_t;
 
 enum class Side : std::uint8_t {
@@ -43,6 +44,7 @@ inline constexpr Bytes HEADER_LENGTH = 20;
 inline constexpr Bytes MESSAGE_COUNT = 1;
 inline constexpr Bytes PACKET_SIZE = 44;
 inline constexpr Bytes MESSAGE_HEADER_LENGTH = 2;
+inline constexpr Timestamp CANCELLATION_POLL_INTERVAL = 500;
 
 inline constexpr MessageCount END_SESSION = 0xFFFF;
 inline constexpr MessageCount MAX_MESSAGE_COUNT = END_SESSION - 1;
