@@ -24,11 +24,19 @@ high-level overview
 high-level overview
 
 #### **gRPC**
-example
+I chose to use gRPC because ...
+
 
 #### **UDP Unicast**
+For Exchange → Plant communication, the simulator sends the feed over **UDP unicast** to replicate how market data is delivered at the wire level. In production, exchange feeds are often **multicast** for efficient one-to-many distribution, with **unicast** used for recovery/retransmission. However, for the scope of this project _(single Exchange, single Market Plant)_, unicast suffices and provides the same low-latency advantages as multicast.
 
-Below is an example of the message payload utilized (big-endian / Network Byte Order). _Offsets are byte offsets from the start of the UDP datagram buffer._ As mentioned before, Eech MoldUDP64 message is encoded as: `msg_len (u16)` then `msg_len` bytes of payload. The offsets below are relative to the start of the payload (immediately after `msg_len`).
+**[`moldudp64_client.h`](./src/network/moldudp64_client.h)** implements a **MoldUDP64** client state machine that:
+- Parses the MoldUDP64 header (session, sequence number, message count) and tracks the active session.
+- Enforces **in-order processing** using _sequencing_, dropping late/duplicate datagrams.
+- Detects **sequence gaps** and enters recovery (cold-start backfill or mid-stream gapfill).
+- **Retransmits requests** starting at the missing sequence number, throttled by a timeout and bounded by `MAX_MESSAGE_COUNT`.
+
+Below is an example of the message payload utilized (big-endian / Network Byte Order). _Offsets are byte offsets from the start of the UDP datagram buffer._ As mentioned before, Eech **[MoldUDP64](https://www.nasdaqtrader.com/content/technicalsupport/specifications/dataproducts/moldudp64.pdf)** message is encoded as: `msg_len (u16)` then `msg_len` bytes of payload. The offsets below are relative to the start of the payload (immediately after `msg_len`).
 
 | Payload Offset (bytes) | Field          | Size | Type |
 |---:|---|---:|---|
@@ -39,7 +47,7 @@ Below is an example of the message payload utilized (big-endian / Network Byte O
 | 10–13 | `quantity`      | 4 | `u32` |
 | 14–21 | `exchange_ts`   | 8 | `u64` |
 
-
+> Note: for this simulator, each UDP datagram carries a single MoldUDP64 message, while preserving the MoldUDP64 Protocol and sequencing semantics.
 
 ### **Exchange**
 high-level overview
