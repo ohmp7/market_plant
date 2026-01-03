@@ -32,4 +32,6 @@ high-level overview
 high-level overview
 
 ## **Styling**
-high-level overview
+
+- **[Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html)**:
+- **[Protobuf Styling](https://protobuf.dev/programming-guides/style/)**:
