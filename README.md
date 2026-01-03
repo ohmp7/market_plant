@@ -8,7 +8,7 @@ This repository showcases a low-latency C++ Market Data Feed Handler simulator _
 
 The motivation behind this project was to build a high-performance middleware service that ingests exchange-style UDP feeds and efficiently scales to one-to-many subscribers.
 
-#### _What is a Market Data Feed Handler?_
+### _What is a Market Data Feed Handler?_
 
 A Market data feed handler connects exchange feeds with internal trading systems, turning raw data into digestible market data and streaming to downstream consumers at scale. They’re a crucial part of market infrastructure and are designed to move high-volume, latency-sensitive data.
 
