@@ -36,7 +36,7 @@ For Exchange → Plant communication, the simulator sends the feed over **UDP un
 - Detects **sequence gaps** and enters recovery (cold-start backfill or mid-stream gapfill).
 - **Retransmits requests** starting at the missing sequence number, throttled by a timeout and bounded by `MAX_MESSAGE_COUNT`.
 
-Below is an example of the message payload utilized (big-endian / Network Byte Order). _Offsets are byte offsets from the start of the UDP datagram buffer._ As mentioned before, Eech **[MoldUDP64](https://www.nasdaqtrader.com/content/technicalsupport/specifications/dataproducts/moldudp64.pdf)** message is encoded as: `msg_len (u16)` then `msg_len` bytes of payload. The offsets below are relative to the start of the payload (immediately after `msg_len`).
+Below is an example of the message payload utilized (Big-Endian/NBO). As mentioned before, Each **[MoldUDP64](https://www.nasdaqtrader.com/content/technicalsupport/specifications/dataproducts/moldudp64.pdf)** message is encoded as: `msg_len (u16)` then `msg_len` bytes of payload. The offsets below are byte offsets from the start of the UDP datagram buffer.
 
 | Payload Offset (bytes) | Field          | Size | Type |
 |---:|---|---:|---|
