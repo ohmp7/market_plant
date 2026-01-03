@@ -47,6 +47,7 @@ Below is an example of the message payload utilized (Big-Endian/NBO). As mention
 | 10–13 | `quantity`      | 4 | `u32` |
 | 14–21 | `exchange_ts`   | 8 | `u64` |
 
+<br></br>
 > Note: for this simulator, each UDP datagram carries a single MoldUDP64 message, while preserving the MoldUDP64 Protocol and sequencing semantics.
 
 ### **Exchange Simulator**
