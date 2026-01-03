@@ -1,6 +1,10 @@
 # **Market Data Feed Handler**
 
-This repository showcases a low-latency C++ market data feed handler simulator. The feed handler _(referred to as the **Market Plant**)_ ingests UDP unicast datagrams from a simulated exchange using Nasdaq’s **[MoldUDP64](https://www.nasdaqtrader.com/content/technicalsupport/specifications/dataproducts/moldudp64.pdf) Protocol**, maintains an in-memory **L2 price-level order book**, and streams real-time updates to subscribers via **server-side [gRPC](https://grpc.io/) streaming**.
+This repository showcases a low-latency C++ market data feed handler simulator _(referred to as the **Market Plant**)_, which:
+
+- ingests UDP unicast datagrams from a simulated exchange using Nasdaq’s **[MoldUDP64](https://www.nasdaqtrader.com/content/technicalsupport/specifications/dataproducts/moldudp64.pdf) Protocol**
+- Maintains an in-memory **L2 price-level order book**
+- Streams real-time updates to subscribers via **server-side [gRPC](https://grpc.io/) streaming**.
 
 The motivation behind this project was to build a high-performance middleware service that ingests exchange-style UDP feeds and efficiently scales to one-to-many subscribers.
 
