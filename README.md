@@ -37,7 +37,7 @@ For Exchange → Plant communication, the simulator sends the feed over **UDP un
 - **Retransmits requests** starting at the missing sequence number, throttled by a timeout and bounded by `MAX_MESSAGE_COUNT`.
 
 Below is an example of the message payload utilized (Big-Endian/NBO). As mentioned before, Each **[MoldUDP64](https://www.nasdaqtrader.com/content/technicalsupport/specifications/dataproducts/moldudp64.pdf)** message is encoded as: `msg_len (u16)` then `msg_len` bytes of payload. The offsets below are byte offsets from the start of the UDP datagram buffer.
-
+<br></br>
 | Payload Offset (bytes) | Field          | Size | Type |
 |---:|---|---:|---|
 | 0–3   | `instrument_id` | 4 | `u32` |
@@ -46,6 +46,7 @@ Below is an example of the message payload utilized (Big-Endian/NBO). As mention
 | 6–9   | `price`         | 4 | `u32` |
 | 10–13 | `quantity`      | 4 | `u32` |
 | 14–21 | `exchange_ts`   | 8 | `u64` |
+<br></br>
 
 > Note: for this simulator, each UDP datagram carries a single MoldUDP64 message, while preserving the MoldUDP64 Protocol and sequencing semantics.
 
@@ -58,8 +59,47 @@ To support gap recovery, the simulator also keeps a fixed-size **in-memory histo
 ### **Subscriber**
 high-level overview
 
-## **Project Structure**
-high-level overview
+## Project Structure
+- **[`config/`](./config)**  
+  Runtime configuration (ex. ports, instruments, depth).  
+  - **[`config.json`](./config/config.json)**
+
+- **[`protos/market_plant/`](./protos/market_plant)**  
+  Protobuf definitions for the Market Plant gRPC API.  
+  - **[`market_plant.proto`](./protos/market_plant/market_plant.proto)**
+
+- **[`genproto/market_plant/`](./genproto/market_plant)**  
+  Generated protobuf + gRPC C++ sources (checked in for convenience).  
+  - **[`market_plant.pb.h`](./genproto/market_plant/market_plant.pb.h) / [`market_plant.pb.cc`](./genproto/market_plant/market_plant.pb.cc)**  
+  - **[`market_plant.grpc.pb.h`](./genproto/market_plant/market_plant.grpc.pb.h) / [`market_plant.grpc.pb.cc`](./genproto/market_plant/market_plant.grpc.pb.cc)**
+
+- **[`src/app/`](./src/app)**  
+  Top-level applications / entrypoints.  
+  - **[`exchange.cpp`](./src/app/exchange.cpp)** / **[`exchange.h`](./src/app/exchange.h)** — Exchange simulator (event generation + UDP publisher + retransmission).  
+  - **[`subscriber.cpp`](./src/app/subscriber.cpp)** / **[`subscriber.h`](./src/app/subscriber.h)** — gRPC subscriber client.
+
+- **[`src/market/`](./src/market)**  
+  Market Plant core (order books + subscriber fanout + exchange feed ingestion).  
+  - **[`market_plant.h`](./src/market/market_plant.h)** / **[`market_plant.cpp`](./src/market/market_plant.cpp)** — Market Plant server implementation.  
+  - **[`event.h`](./src/market/event.h)** — Market event types and shared structures.  
+  - **[`cli/`](./src/market/cli)** — CLI parsing / config wiring.  
+    - **[`market_cli.h`](./src/market/cli/market_cli.h)** / **[`market_cli.cpp`](./src/market/cli/market_cli.cpp)**
+
+- **[`src/network/`](./src/network)**  
+  Networking + wire-format utilities.  
+  - **[`moldudp64.h`](./src/network/moldudp64.h)** / **[`moldudp64.cpp`](./src/network/moldudp64.cpp)** — MoldUDP64 framing + gap detection/retransmission client logic.  
+  - **[`udp_messenger.h`](./src/network/udp_messenger.h)** / **[`udp_messenger.cpp`](./src/network/udp_messenger.cpp)** — UDP socket send wrapper.  
+  - **[`endian.h`](./src/network/endian.h)** — Big-endian (network byte order) read/write helpers.
+
+- **[`scripts/`](./scripts)**  
+  Helper scripts for development (build/run tooling, etc.).
+
+- **[`CMakeLists.txt`](./CMakeLists.txt)**  
+  Build configuration.
+
+- **[`README.md`](./README.md)**  
+  Project documentation.
+
 
 ## **Usage**
 high-level overview
