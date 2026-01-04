@@ -28,7 +28,7 @@ I chose to use gRPC because ...
 
 
 #### **UDP Unicast**
-For Exchange → Plant communication, the simulator sends the feed over **UDP unicast** to replicate how market data is delivered at the wire level. In production, exchange feeds are often **multicast** for efficient one-to-many distribution, with **unicast** used for recovery/retransmission. However, for the scope of this project _(single Exchange, single Market Plant)_, unicast suffices and provides the same low-latency advantages as multicast.
+For Exchange → Plant communication, the simulator sends the feed over **UDP unicast** to replicate how market data is delivered. In production, exchange feeds often use **multicast** for efficient one-to-many distribution, with **unicast** used for recovery/retransmission. However, for the scope of this project _(single Exchange and Market Data Feed Handler)_, unicast suffices and provides the same advantages as multicast.
 
 **[`moldudp64_client.h`](./src/network/moldudp64_client.h)** implements a **MoldUDP64** client state machine that:
 - Parses the MoldUDP64 header (session, sequence number, message count) and tracks the active session.
@@ -60,7 +60,7 @@ To support gap recovery, the simulator also keeps a fixed-size **in-memory histo
 high-level overview
 
 ## Project Structure
-- **[`config/config.json`](./config/config.json)** _Runtime configuration (ex. ports, instruments, depth)._
+- **[`config/config.json`](./config/config.json)** _Runtime instrument configuration._
 
 - **[`protos/market_plant/market_plant.proto`](./protos/market_plant/market_plant.proto)** _Protobuf definitions for the Market Plant gRPC API._
 
