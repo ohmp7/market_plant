@@ -19,6 +19,8 @@ struct MarketPlantConfig {
     std::uint16_t grpc_port;
     std::string market_ip;
     std::uint16_t market_port;
+    std::string exchange_ip;
+    std::uint16_t exchange_port;
 
     static MarketPlantConfig New() {
         MarketPlantConfig config;
@@ -29,6 +31,9 @@ struct MarketPlantConfig {
         config.market_ip = get_env("MARKET_IP", "127.0.0.1");
         config.market_port = static_cast<std::uint16_t>(get_env_int("MARKET_PORT", 9001));
         
+        config.exchange_ip = get_env("EXCHANGE_IP", "127.0.0.1");
+        config.exchange_port = static_cast<std::uint16_t>(get_env_int("EXCHANGE_PORT", 9000));
+
         return config;
     }
     

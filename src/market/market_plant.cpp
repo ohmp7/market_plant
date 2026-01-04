@@ -1,6 +1,5 @@
 #include "endian.h"
 #include "market_plant.h"
-#include "market_plant_config.h"
 
 #include <arpa/inet.h>
 #include <sys/socket.h>
@@ -43,7 +42,6 @@ void OrderBook::PushEventToSubscribers(const MarketEvent& data) {
                 to_enqueue.push_back(std::move(sub));
                 ++it;
             } else {
-                // subscriber already destroyed, so prune subscription entry
                 it = subscriptions_.erase(it);
             }
         }
@@ -150,9 +148,9 @@ const OrderBook& BookManager::book(InstrumentId id) const {
 }
 
 
-ExchangeFeed::ExchangeFeed(const Exchange& exchange, BookManager& books, const MarketPlantConfig& mp_config)
+ExchangeFeed::ExchangeFeed(BookManager& books, const MarketPlantConfig& mp_config)
     : sockfd_(socket(AF_INET, SOCK_DGRAM, 0)),
-        protocol_(0, sockfd_, exchange.ip, exchange.port),
+        protocol_(0, sockfd_, mp_config.exchange_ip, mp_config.exchange_port),
         books_(books) {
     
     if (sockfd_ < 0) throw std::runtime_error("Error: socket creation to exchange failed.");
@@ -164,7 +162,7 @@ ExchangeFeed::ExchangeFeed(const Exchange& exchange, BookManager& books, const M
     }
 
     // EXCHANGE
-    sockaddr_in exaddr = construct_ipv4(exchange.ip, exchange.port);
+    sockaddr_in exaddr = construct_ipv4(mp_config.exchange_ip, mp_config.exchange_port);
     if (connect(sockfd_, reinterpret_cast<sockaddr*>(&exaddr), sizeof(exaddr)) < 0) {
         throw std::runtime_error("udp connect failed");
     }
@@ -435,7 +433,7 @@ int main(int argc, char* argv[]) {
     BookManager manager(conf.instruments);
 
     // connect to exchange
-    ExchangeFeed feed(conf.exchange, manager, mp_config);
+    ExchangeFeed feed(manager, mp_config);
     std::thread exchange_feed([&]{ feed.ConnectToExchange(); });
 
     // gRPC server runs on main thread

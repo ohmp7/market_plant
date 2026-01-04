@@ -6,26 +6,14 @@
 #include <string>
 #include <vector>
 
-struct Exchange {
-    std::uint16_t port;
-    std::string ip;
-};
-
 struct Instrument {
     InstrumentId id;
     Depth depth;
 };
 
-struct RuntimeConfig {
-    uint16_t sub_ptool_size;
-    uint16_t max_sub_limit;
-};
-
 using InstrumentConfig = std::vector<Instrument>;
 
 struct Config {
-    RuntimeConfig runtime;
-    Exchange exchange;
     InstrumentConfig instruments;
 };
 

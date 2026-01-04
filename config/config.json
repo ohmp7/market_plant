@@ -1,12 +1,4 @@
 {
-    "runtime" : {
-        "subscriber_thread_pool_size" : 4,
-        "max_subscribers" : 4
-    },
-    "exchange" : {   
-        "port" : 9000,
-        "ip" : "127.0.0.1"
-    },
     "instruments" : [
         {
             "instrument_id" : 1,

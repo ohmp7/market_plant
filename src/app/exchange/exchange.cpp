@@ -76,7 +76,6 @@ void ExchangeSimulator::SendDatagrams() {
         std::uint8_t buf[PACKET_SIZE];
         serialize_event(buf, next);
 
-        // TODO: add retry functionality later
         messenger.SendDatagram(buf, PACKET_SIZE);
     }
 }

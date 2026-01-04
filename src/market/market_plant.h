@@ -134,7 +134,7 @@ private:
 
 class ExchangeFeed {
 public:
-    ExchangeFeed(const Exchange& exchange, BookManager& books, const MarketPlantConfig& mp_config);
+    ExchangeFeed(BookManager& books, const MarketPlantConfig& mp_config);
     
     ~ExchangeFeed();
 
