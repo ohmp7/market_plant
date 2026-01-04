@@ -1,5 +1,6 @@
-#include "market_plant.h"
 #include "endian.h"
+#include "market_plant.h"
+#include "market_plant_config.h"
 
 #include <arpa/inet.h>
 #include <sys/socket.h>
@@ -10,9 +11,6 @@
 #include <stdexcept>
 #include <thread>
 #include <vector>
-
-constexpr std::uint16_t market_port = 9001;
-const std::string market_ip = "127.0.0.1";
 
 std::string SessionGenerator::Generate() {
     std::string session_key(16, '\0');
@@ -152,7 +150,7 @@ const OrderBook& BookManager::book(InstrumentId id) const {
 }
 
 
-ExchangeFeed::ExchangeFeed(const Exchange& exchange, BookManager& books)
+ExchangeFeed::ExchangeFeed(const Exchange& exchange, BookManager& books, const MarketPlantConfig& mp_config)
     : sockfd_(socket(AF_INET, SOCK_DGRAM, 0)),
         protocol_(0, sockfd_, exchange.ip, exchange.port),
         books_(books) {
@@ -160,7 +158,7 @@ ExchangeFeed::ExchangeFeed(const Exchange& exchange, BookManager& books)
     if (sockfd_ < 0) throw std::runtime_error("Error: socket creation to exchange failed.");
     
     // MARKET
-    sockaddr_in plantaddr = construct_ipv4(market_ip, market_port);
+    sockaddr_in plantaddr = construct_ipv4(mp_config.market_ip, mp_config.market_port);
     if (bind(sockfd_, reinterpret_cast<sockaddr*>(&plantaddr), sizeof(plantaddr)) < 0) {
         throw std::runtime_error("Error: bind failed.");
     }
@@ -433,25 +431,24 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
+    MarketPlantConfig mp_config = MarketPlantConfig::New();
     BookManager manager(conf.instruments);
 
     // connect to exchange
-    ExchangeFeed feed(conf.exchange, manager);
+    ExchangeFeed feed(conf.exchange, manager, mp_config);
     std::thread exchange_feed([&]{ feed.ConnectToExchange(); });
 
     // gRPC server runs on main thread
     MarketPlantServer service(manager);
 
     grpc::ServerBuilder builder;
-    builder.AddListeningPort("0.0.0.0:50051", grpc::InsecureServerCredentials());
+    builder.AddListeningPort(mp_config.GetGrpcAddress(), grpc::InsecureServerCredentials());
     builder.RegisterService(&service);
 
     std::unique_ptr<grpc::Server> server(builder.BuildAndStart());
-    std::cout << "gRPC listening on 0.0.0.0:50051\n";
+    std::cout << "gRPC listening on " << mp_config.GetGrpcAddress() << "\n";
 
     server->Wait();
-
-    exchange_feed.join();
 
     return 0;
 }

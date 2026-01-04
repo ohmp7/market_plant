@@ -16,15 +16,15 @@
 #include <unordered_map>
 #include <unordered_set>
 
-
 #include <netinet/in.h>
 
 #include <grpcpp/grpcpp.h>
 #include "market_plant/market_plant.grpc.pb.h"
 
-#include "moldudp64.h"
 #include "event.h"
 #include "market_cli.h"
+#include "market_plant_config.h"
+#include "moldudp64.h"
 
 namespace ms = market_plant::v1;
 
@@ -134,7 +134,7 @@ private:
 
 class ExchangeFeed {
 public:
-    ExchangeFeed(const Exchange& exchange, BookManager& books);
+    ExchangeFeed(const Exchange& exchange, BookManager& books, const MarketPlantConfig& mp_config);
     
     ~ExchangeFeed();
 
