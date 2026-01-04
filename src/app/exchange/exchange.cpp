@@ -28,17 +28,15 @@ BookState::BookState() {
     }
 }
 
-
 ExchangeSimulator::ExchangeSimulator()
-    : config_(ExchangeConfig::New()),
-      sockfd_(socket(AF_INET, SOCK_DGRAM, 0)),
+    : sockfd_(socket(AF_INET, SOCK_DGRAM, 0)),
+      config_(ExchangeConfig::New()),
       generate_id(config_.min_instrument_id, config_.max_instrument_id),
       generate_side(0, 1),
       generate_event(1, 100),
       generate_price(config_.min_price, config_.max_price),
       generate_quantity(config_.min_quantity, config_.max_quantity),
-      generate_interval(config_.min_interval_ms, config_.max_interval_ms)
-{
+      generate_interval(config_.min_interval_ms, config_.max_interval_ms) {
 
     if (sockfd_ < 0) throw std::runtime_error("Error: socket creation to exchange failed.");
 
@@ -47,7 +45,7 @@ ExchangeSimulator::ExchangeSimulator()
     plantaddr_.sin_port = htons(config_.exchange_port);
     plantaddr_.sin_addr.s_addr = htonl(INADDR_ANY);
 
-    if (::bind(sockfd_, reinterpret_cast<sockaddr*>(&plantaddr_), sizeof(plantaddr_)) < 0) {
+    if (bind(sockfd_, reinterpret_cast<sockaddr*>(&plantaddr_), sizeof(plantaddr_)) < 0) {
         close(sockfd_);
         sockfd_ = -1;
         throw std::runtime_error("Error: bind failed.");
@@ -155,10 +153,6 @@ void ExchangeSimulator::GenerateMarketEvents() {
         Timestamp sleep = static_cast<Timestamp>(generate_interval(number_generator_));
         std::this_thread::sleep_for(std::chrono::milliseconds(sleep));
     }
-}
-
-void ExchangeSimulator::GenerateHeartbeats() {
-
 }
 
 void ExchangeSimulator::Retransmitter() {
@@ -274,12 +268,13 @@ BookState& ExchangeSimulator::get_book(InstrumentId id, Side side) {
 
 
 int main() {
-
     ExchangeSimulator exchange;
     
     std::thread sender([&] {exchange.SendDatagrams(); } );
     std::thread generator([&] {exchange.GenerateMarketEvents(); } );
     std::thread retransmitter([&]{ exchange.Retransmitter(); });
+
+    std::cout << "Exchange simulator has started.\n";
 
     generator.join();
 }

@@ -3,12 +3,8 @@
 #include <iomanip>
 
 MarketDataSubscriber::MarketDataSubscriber(SubscriberConfig config)
-    : config_(std::move(config))
-{
-    auto channel = grpc::CreateChannel(
-        config_.GetAddress(), 
-        grpc::InsecureChannelCredentials()
-    );
+    : config_(std::move(config)) {
+    auto channel = grpc::CreateChannel(config_.GetAddress(), grpc::InsecureChannelCredentials());
     stub_ = ms::MarketPlantService::NewStub(channel);
 }
 
@@ -65,7 +61,7 @@ void MarketDataSubscriber::PrintBookState() {
     auto bid_it = book_.bids.begin();
     auto ask_it = book_.asks.begin();
 
-    for (int i = 0; i < config_.display_depth; ++i) {
+    for (Depth i = 0; i < config_.display_depth; ++i) {
         if (bid_it != book_.bids.end()) {
             std::cout << std::setw(8) << bid_it->first << " | " << std::setw(8) << bid_it->second;
             ++bid_it;
@@ -90,7 +86,7 @@ void MarketDataSubscriber::Run() {
     ms::Subscription req;
     
     // Subscribe to all configured instrument IDs
-    for (int id : config_.instrument_ids) {
+    for (InstrumentId id : config_.instrument_ids) {
         req.mutable_subscribe()->add_ids(id);
     }
     
