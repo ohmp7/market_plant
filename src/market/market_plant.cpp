@@ -26,39 +26,19 @@ std::string SessionGenerator::Generate() {
 
 OrderBook::OrderBook(InstrumentId id, const Depth depth) : id_(id), depth_(depth) {}
     
-// TODO: Combine AddOrder() and RemoveOrder() with PushEventToSubscribers()
-void OrderBook::AddOrder(Side side, Price price, Quantity quantity) {
-    std::lock_guard<std::mutex> lock(mutex_);
-
-    if (side == Side::BID) {
-        UpdateLevel(bids_, price, quantity);
-    } else {
-        UpdateLevel(asks_, price, quantity);
-    }
-}
-
-void OrderBook::RemoveOrder(Side side, Price price, Quantity quantity) {
-    std::lock_guard<std::mutex> lock(mutex_);
-
-    if (side == Side::BID) {
-        auto it = bids_.find(price);
-        if (it == bids_.end()) return;
-        ModifyLevel(bids_, it, quantity);
-    } else {
-        auto it = asks_.find(price);
-        if (it == asks_.end()) return;
-        ModifyLevel(asks_, it, quantity);
-    }
-}
-
-void OrderBook::PushEventToSubscribers(const StreamResponsePtr& event) {
+void OrderBook::PushEventToSubscribers(const MarketEvent& data) {
     std::vector<std::shared_ptr<Subscriber>> to_enqueue;
 
     {
         std::lock_guard<std::mutex> lock(mutex_);
+        
+        if (data.event == LevelEvent::AddLevel) { 
+            AddOrder(data.side, data.price, data.quantity);
+        } else { 
+            RemoveOrder(data.side, data.price, data.quantity);
+        }
 
         to_enqueue.reserve(subscriptions_.size());
-
         // Get Subscribers for corresponding InstrumentID
         for (auto it = subscriptions_.begin(); it != subscriptions_.end(); ) {
             if (auto sub = it->second.lock()) {
@@ -71,7 +51,30 @@ void OrderBook::PushEventToSubscribers(const StreamResponsePtr& event) {
         }
     }
 
+    if (to_enqueue.empty()) return;
+
+    StreamResponsePtr event = MarketPlantServer::ConstructEventUpdate(data);
     for (const auto& sub : to_enqueue) sub->Enqueue(event);
+}
+
+void OrderBook::AddOrder(Side side, Price price, Quantity quantity) {
+    if (side == Side::BID) {
+        UpdateLevel(bids_, price, quantity);
+    } else {
+        UpdateLevel(asks_, price, quantity);
+    }
+}
+
+void OrderBook::RemoveOrder(Side side, Price price, Quantity quantity) {
+    if (side == Side::BID) {
+        auto it = bids_.find(price);
+        if (it == bids_.end()) return;
+        ModifyLevel(bids_, it, quantity);
+    } else {
+        auto it = asks_.find(price);
+        if (it == asks_.end()) return;
+        ModifyLevel(asks_, it, quantity);
+    }
 }
 
 void OrderBook::InitializeSubscription(std::shared_ptr<Subscriber> subscriber) {
@@ -197,14 +200,7 @@ const OrderBook& ExchangeFeed::GetOrderBook(InstrumentId id) const {
 
 void ExchangeFeed::handle_event(const MessageView &message) {
     MarketEvent e = parse_event(message);
-
-    if (e.event == LevelEvent::AddLevel) {
-        books_.book(e.instrument_id).AddOrder(e.side, e.price, e.quantity);
-    } else {
-        books_.book(e.instrument_id).RemoveOrder(e.side, e.price, e.quantity);
-    }
-
-    books_.book(e.instrument_id).PushEventToSubscribers(MarketPlantServer::ConstructEventUpdate(e));
+    books_.book(e.instrument_id).PushEventToSubscribers(e);
 }
 
 MarketEvent ExchangeFeed::parse_event(const MessageView &message) {
@@ -400,7 +396,7 @@ StreamResponsePtr MarketPlantServer::ConstructEventUpdate(const MarketEvent& e) 
     // Map event -> proto type
     switch (e.event) {
         case LevelEvent::AddLevel: curr->set_type(ms::ADD_LEVEL); break;
-        case LevelEvent::ModifyLevel: curr->set_type(ms::REPLACE_LEVEL); break;
+        case LevelEvent::ModifyLevel: curr->set_type(ms::REDUCE_LEVEL); break;
         default: curr->set_type(ms::EVENT_UNSPECIFIED); break;
     }
 

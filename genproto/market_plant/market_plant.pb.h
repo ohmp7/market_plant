@@ -155,8 +155,7 @@ inline bool Side_Parse(
 enum OrderBookEventType : int {
   EVENT_UNSPECIFIED = 0,
   ADD_LEVEL = 1,
-  REPLACE_LEVEL = 2,
-  REMOVE_LEVEL = 3,
+  REDUCE_LEVEL = 2,
   OrderBookEventType_INT_MIN_SENTINEL_DO_NOT_USE_ =
       ::std::numeric_limits<::int32_t>::min(),
   OrderBookEventType_INT_MAX_SENTINEL_DO_NOT_USE_ =
@@ -167,11 +166,11 @@ extern const uint32_t OrderBookEventType_internal_data_[];
 inline constexpr OrderBookEventType OrderBookEventType_MIN =
     static_cast<OrderBookEventType>(0);
 inline constexpr OrderBookEventType OrderBookEventType_MAX =
-    static_cast<OrderBookEventType>(3);
+    static_cast<OrderBookEventType>(2);
 inline bool OrderBookEventType_IsValid(int value) {
-  return 0 <= value && value <= 3;
+  return 0 <= value && value <= 2;
 }
-inline constexpr int OrderBookEventType_ARRAYSIZE = 3 + 1;
+inline constexpr int OrderBookEventType_ARRAYSIZE = 2 + 1;
 const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL OrderBookEventType_descriptor();
 template <typename T>
 const ::std::string& OrderBookEventType_Name(T value) {
@@ -182,7 +181,7 @@ const ::std::string& OrderBookEventType_Name(T value) {
 }
 template <>
 inline const ::std::string& OrderBookEventType_Name(OrderBookEventType value) {
-  return ::google::protobuf::internal::NameOfDenseEnum<OrderBookEventType_descriptor, 0, 3>(
+  return ::google::protobuf::internal::NameOfDenseEnum<OrderBookEventType_descriptor, 0, 2>(
       static_cast<int>(value));
 }
 inline bool OrderBookEventType_Parse(

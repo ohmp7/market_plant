@@ -429,15 +429,14 @@ const char descriptor_table_protodef_market_5fplant_2fmarket_5fplant_2eproto[] A
     "nRequest\022\025\n\rsubscriber_id\030\001 \001(\r\022\022\n\nsessi"
     "on_id\030\002 \001(\014\022-\n\006change\030\003 \001(\0132\035.market_pla"
     "nt.v1.Subscription*.\n\004Side\022\024\n\020SIDE_UNSPE"
-    "CIFIED\020\000\022\007\n\003BID\020\001\022\007\n\003ASK\020\002*_\n\022OrderBookE"
+    "CIFIED\020\000\022\007\n\003BID\020\001\022\007\n\003ASK\020\002*L\n\022OrderBookE"
     "ventType\022\025\n\021EVENT_UNSPECIFIED\020\000\022\r\n\tADD_L"
-    "EVEL\020\001\022\021\n\rREPLACE_LEVEL\020\002\022\020\n\014REMOVE_LEVE"
-    "L\020\0032\302\001\n\022MarketPlantService\022Q\n\rStreamUpda"
-    "tes\022\035.market_plant.v1.Subscription\032\037.mar"
-    "ket_plant.v1.StreamResponse0\001\022Y\n\023UpdateS"
-    "ubscriptions\022*.market_plant.v1.UpdateSub"
-    "scriptionRequest\032\026.google.protobuf.Empty"
-    "b\006proto3"
+    "EVEL\020\001\022\020\n\014REDUCE_LEVEL\020\0022\302\001\n\022MarketPlant"
+    "Service\022Q\n\rStreamUpdates\022\035.market_plant."
+    "v1.Subscription\032\037.market_plant.v1.Stream"
+    "Response0\001\022Y\n\023UpdateSubscriptions\022*.mark"
+    "et_plant.v1.UpdateSubscriptionRequest\032\026."
+    "google.protobuf.Emptyb\006proto3"
 };
 static const ::_pbi::DescriptorTable* PROTOBUF_NONNULL const
     descriptor_table_market_5fplant_2fmarket_5fplant_2eproto_deps[1] = {
@@ -447,7 +446,7 @@ static ::absl::once_flag descriptor_table_market_5fplant_2fmarket_5fplant_2eprot
 PROTOBUF_CONSTINIT const ::_pbi::DescriptorTable descriptor_table_market_5fplant_2fmarket_5fplant_2eproto = {
     false,
     false,
-    1488,
+    1469,
     descriptor_table_protodef_market_5fplant_2fmarket_5fplant_2eproto,
     "market_plant/market_plant.proto",
     &descriptor_table_market_5fplant_2fmarket_5fplant_2eproto_once,
@@ -473,7 +472,7 @@ const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL OrderBookEventType_de
   return file_level_enum_descriptors_market_5fplant_2fmarket_5fplant_2eproto[1];
 }
 PROTOBUF_CONSTINIT const uint32_t OrderBookEventType_internal_data_[] = {
-    262144u, 0u, };
+    196608u, 0u, };
 // ===================================================================
 
 class Level::_Internal {

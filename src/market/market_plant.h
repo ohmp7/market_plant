@@ -23,7 +23,7 @@
 #include "market_plant/market_plant.grpc.pb.h"
 
 #include "moldudp64.h"
-#include "event.h" 
+#include "event.h"
 #include "market_cli.h"
 
 namespace ms = market_plant::v1;
@@ -82,16 +82,16 @@ class OrderBook {
 public:
     OrderBook(InstrumentId id, const Depth depth);
     
-    void AddOrder(Side side, Price price, Quantity quantity);
-        
-    void RemoveOrder(Side side, Price price, Quantity quantity);
-
-    void PushEventToSubscribers(const StreamResponsePtr& event);
+    void PushEventToSubscribers(const MarketEvent& data);
 
     void InitializeSubscription(std::shared_ptr<Subscriber> subscriber);
     
     void CancelSubscription(const SubscriberId id);
 private:
+    void AddOrder(Side side, Price price, Quantity quantity);
+        
+    void RemoveOrder(Side side, Price price, Quantity quantity);
+
     void Snapshot(ms::SnapshotUpdate* snapshot);
 
     template <class Levels>

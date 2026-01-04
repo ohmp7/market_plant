@@ -71,7 +71,7 @@ target_link_libraries(market_plant
 )
 
 # Exchange Executable
-add_executable(exchange src/app/exchange.cpp)
+add_executable(exchange src/app/exchange/exchange.cpp)
 target_link_libraries(exchange PRIVATE network_lib)
 target_include_directories(exchange PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/src/market       
@@ -80,7 +80,7 @@ enable_warnings(exchange)
 
 
 # Subscriber Executable
-add_executable(subscriber src/app/subscriber.cpp)
+add_executable(subscriber src/app/subscriber/subscriber.cpp)
 enable_warnings(subscriber)
 target_link_libraries(subscriber PRIVATE ${GENPROTO_LIB})
 target_include_directories(subscriber PRIVATE ${GENPROTO_DIR})

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "event.h"
+#include "exchange_config.h"
 
 #include <condition_variable>
 #include <cstdint>
@@ -69,10 +70,7 @@ private:
     int sockfd_;
     sockaddr_in plantaddr_{};
 
-    // TODO: To be fixed
-    static constexpr const char* plant_ip = "127.0.0.1";
-    static constexpr std::uint16_t plant_port = 9001;
-    static constexpr std::uint16_t exchange_port = 9000;
+    ExchangeConfig config_;
     inline static constexpr char session[SESSION_LENGTH] = {'E','X','C','H','A','N','G','E','I','D'};
 
     // Live Exchange State
@@ -86,10 +84,10 @@ private:
 
     // Generators
     std::mt19937_64 number_generator_{std::random_device{}()};
-    std::uniform_int_distribution<int> generate_id{1, 1};
-    std::uniform_int_distribution<int> generate_side{0, 1};
-    std::uniform_int_distribution<int> generate_event{1, 100};
-    std::uniform_int_distribution<Price> generate_price{1, MAX_PRICE};
-    std::uniform_int_distribution<Quantity> generate_quantity{1, MAX_QUANTITY};
-    std::uniform_int_distribution<int> generate_interval{50, 100};
+    std::uniform_int_distribution<int> generate_id;
+    std::uniform_int_distribution<int> generate_side;
+    std::uniform_int_distribution<int> generate_event;
+    std::uniform_int_distribution<Price> generate_price;
+    std::uniform_int_distribution<Quantity> generate_quantity;
+    std::uniform_int_distribution<int> generate_interval;
 };

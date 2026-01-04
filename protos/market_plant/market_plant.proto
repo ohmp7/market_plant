@@ -21,8 +21,7 @@ message Level {
 enum OrderBookEventType {
     EVENT_UNSPECIFIED = 0;
     ADD_LEVEL = 1;
-    REPLACE_LEVEL = 2;
-    REMOVE_LEVEL = 3;
+    REDUCE_LEVEL = 2;
 }
 
 message OrderBookEventUpdate {
@@ -78,6 +77,7 @@ message UpdateSubscriptionRequest {
     Subscription change = 3;
 }
 
+// MarketPlantService exposes the Market Plant API.
 service MarketPlantService {
     // Server-side streaming
     rpc StreamUpdates ( Subscription ) returns (stream StreamResponse);

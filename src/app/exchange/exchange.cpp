@@ -1,25 +1,24 @@
 #include "endian.h"
+#include "exchange.h"
 #include "moldudp64.h"
 #include "udp_messenger.h"
-#include "exchange.h"
 
 #include <chrono>
+#include <condition_variable>
 #include <cstring>
+#include <deque>
+#include <iostream>
+#include <mutex>
+#include <random>
+#include <stdexcept>
+#include <thread>
+#include <unordered_map>
+#include <vector>
 
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <unistd.h>
-
-#include <unordered_map>
-#include <vector>
-#include <iostream>
-#include <random>
-#include <thread>
-#include <condition_variable>
-#include <mutex>
-#include <stdexcept>
-#include <deque>
 
 BookState::BookState() {
     avail_prices.reserve(MAX_PRICE);
@@ -30,14 +29,22 @@ BookState::BookState() {
 }
 
 
-ExchangeSimulator::ExchangeSimulator() : sockfd_(socket(AF_INET, SOCK_DGRAM, 0)) {
+ExchangeSimulator::ExchangeSimulator()
+    : config_(ExchangeConfig::New()),
+      sockfd_(socket(AF_INET, SOCK_DGRAM, 0)),
+      generate_id(config_.min_instrument_id, config_.max_instrument_id),
+      generate_side(0, 1),
+      generate_event(1, 100),
+      generate_price(config_.min_price, config_.max_price),
+      generate_quantity(config_.min_quantity, config_.max_quantity),
+      generate_interval(config_.min_interval_ms, config_.max_interval_ms)
+{
 
     if (sockfd_ < 0) throw std::runtime_error("Error: socket creation to exchange failed.");
 
-
     memset(&plantaddr_, 0, sizeof(plantaddr_));
     plantaddr_.sin_family = AF_INET;
-    plantaddr_.sin_port = htons(exchange_port);
+    plantaddr_.sin_port = htons(config_.exchange_port);
     plantaddr_.sin_addr.s_addr = htonl(INADDR_ANY);
 
     if (::bind(sockfd_, reinterpret_cast<sockaddr*>(&plantaddr_), sizeof(plantaddr_)) < 0) {
@@ -53,7 +60,7 @@ ExchangeSimulator::ExchangeSimulator() : sockfd_(socket(AF_INET, SOCK_DGRAM, 0))
 }
 
 void ExchangeSimulator::SendDatagrams() {
-    UdpMessenger messenger(sockfd_, plant_ip, plant_port);
+    UdpMessenger messenger(sockfd_, config_.plant_ip.c_str(), config_.plant_port);
 
     while (true) {
 
@@ -71,23 +78,18 @@ void ExchangeSimulator::SendDatagrams() {
         std::uint8_t buf[PACKET_SIZE];
         serialize_event(buf, next);
 
-        // add retry functionality later
+        // TODO: add retry functionality later
         messenger.SendDatagram(buf, PACKET_SIZE);
     }
 }
 
 void ExchangeSimulator::GenerateMarketEvents() {
-    // for now
-    static constexpr int chance_of_add = 55;
-    static constexpr int chance_of_delete = 50;
-    static constexpr int chance_of_new_price = 50;
-
     while (true) {
         const InstrumentId id = static_cast<InstrumentId>(generate_id(number_generator_));
         const Side side = static_cast<Side>(generate_side(number_generator_));
         BookState& book = get_book(id, side);
 
-        const bool add_level = book.levels.empty() || generate_event(number_generator_) <= chance_of_add;
+        const bool add_level = book.levels.empty() || generate_event(number_generator_) <= config_.chance_of_add;
         
         MarketEvent e{};
 
@@ -96,7 +98,7 @@ void ExchangeSimulator::GenerateMarketEvents() {
             const Quantity quantity = static_cast<Quantity>(generate_quantity(number_generator_));
 
             // decide new price or existing price
-            const bool new_price = generate_event(number_generator_) <= chance_of_new_price;
+            const bool new_price = generate_event(number_generator_) <= config_.chance_of_new_price;
 
             Price price;
 
@@ -121,7 +123,7 @@ void ExchangeSimulator::GenerateMarketEvents() {
             const Price price = it->first;
             const Quantity curr_quantity = it->second;
 
-            const bool delete_level = generate_event(number_generator_) <= chance_of_delete;
+            const bool delete_level = generate_event(number_generator_) <= config_.chance_of_delete;
             Quantity quantity_to_remove;
 
             if (delete_level) {
@@ -130,8 +132,8 @@ void ExchangeSimulator::GenerateMarketEvents() {
             } else {
                 std::uniform_int_distribution<Quantity> generate_quantity_to_remove(1, curr_quantity - 1);
                 quantity_to_remove = generate_quantity_to_remove(number_generator_);
+                it->second -= quantity_to_remove;
             }
-            it->second -= quantity_to_remove;
 
             e.instrument_id = id;
             e.side = side;
