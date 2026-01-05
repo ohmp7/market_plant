@@ -1,12 +1,6 @@
 # **Market Data Feed Handler**
 
-This repository showcases a low-latency C++ Market Data Feed Handler simulator _(the **Market Plant**)_ that:
-
-- Ingests UDP unicast datagrams from a simulated exchange using **Nasdaq’s [MoldUDP64](https://www.nasdaqtrader.com/content/technicalsupport/specifications/dataproducts/moldudp64.pdf) Protocol**, including gap detection and retransmission.
-- Builds and maintains an in-memory L2 price-level order book from exchange feed data.
-- Streams real-time deltas to subscribers via **server-side [gRPC](https://grpc.io/) streaming**.
-
-The motivation behind this project was to build a high-performance middleware service that ingests exchange-style UDP feeds and efficiently scales to one-to-many subscribers.
+This repository showcases a low-latency C++ Market Data Feed Handler simulator _(the **Market Plant**)_. The motivation behind this project was to build a high-performance middleware service that ingests exchange-style UDP feeds and efficiently scales to one-to-many subscribers via [gRPC](https://grpc.io/).
 
 ### _What is a Market Data Feed Handler?_
 
@@ -14,20 +8,19 @@ A Market data feed handler connects exchange feeds with internal trading systems
 
 ## **Architecture**
 
+_The diagram below represents the Market Plant system architecture at a high level, showing the data flow between the Exchange simulator, Market Plant server, and subscriber(s)._
+
 <img width="829" height="495" alt="MarketPlantDiagram" src="https://github.com/user-attachments/assets/73399350-64db-483a-91b3-3da1115c8652" />
-example
 
-### **Market Feed Data Handler**
-high-level overview
+### **Market Data Feed Handler**
 
-### **Networking**
-high-level overview
+The Market Plant primarily:
 
-#### **gRPC**
-I chose to use gRPC because ...
-
-
-#### **UDP Unicast**
+- Ingests UDP unicast datagrams from a simulated exchange using **Nasdaq’s [MoldUDP64](https://www.nasdaqtrader.com/content/technicalsupport/specifications/dataproducts/moldudp64.pdf) Protocol**, including gap detection and retransmission.
+- Builds and maintains in-memory L2 price-level order books for configurable instruments from exchange feed data.
+- Streams real-time snapshots and deltas to subscribers via **server-side [gRPC](https://grpc.io/) streaming** efficiently.
+  
+### **UDP Unicast**
 For Exchange → Plant communication, the simulator sends the feed over **UDP unicast** to replicate how market data is delivered. In production, exchange feeds often use **multicast** for efficient one-to-many distribution, with **unicast** used for recovery/retransmission. However, for the scope of this project _(single Exchange and Market Data Feed Handler)_, unicast suffices and provides the same advantages as multicast.
 
 **[`moldudp64_client.h`](./src/network/moldudp64_client.h)** implements a **MoldUDP64** client state machine that:
@@ -49,14 +42,17 @@ Below is an example of the message payload utilized (Big-Endian/NBO). As mention
 
 > Note: for this simulator, each UDP datagram carries a single MoldUDP64 message, while preserving the MoldUDP64 Protocol and sequencing semantics.
 
+### **gRPC**
+
+gRPC with server-side streaming is ideal for market data distribution because it provides bidirectional communication over a single persistent connection, eliminating the connection overhead of repeated HTTP requests. Server-side streaming allows the Market Plant to push updates to subscribers in real-time as market events occur, rather than requiring clients to poll for data. 
+
+The protocol also uses **[HTTP/2 multiplexing](https://blog.codavel.com/http2-multiplexing)**, which allows us to handle multiple concurrent streams over a single TCP connection. Lastly, gRPC's native support for structured data via Protocol Buffers provides type-safe message serialization that's more efficient than JSON.
+
 ### **Exchange Simulator**
 
 The Exchange Simulator produces market movement for testing the Market Plant. It continuously generates randomized **L2 price-level events** (add level, remove level, update level) across instruments and sides, serializes each event into **MoldUDP64-framed UDP datagrams**, and sends them to the Market Plant over UDP unicast.
 
 To support gap recovery, the simulator also keeps a fixed-size **in-memory history buffer** keyed by sequence number. When it receives retransmission requests _(MoldUDP64 header containing a starting sequence number and message count)_, it re-enqueues the requested events and replays them back to the Market Plant.
-
-### **Subscriber**
-high-level overview
 
 ## Project Structure
 - **[`config/config.json`](./config/config.json)** _Runtime instrument configuration._
@@ -248,5 +244,7 @@ INSTRUMENT_IDS=1,2,3,4 \
 
 ## **Styling**
 
-- **[Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html)**:
-- **[Protobuf Styling](https://protobuf.dev/programming-guides/style/)**:
+The Market Plant primarily utilizes the naming conventions provided below:
+
+- **[Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html)**
+- **[Protobuf Styling](https://protobuf.dev/programming-guides/style/)**
