@@ -50,7 +50,7 @@ The protocol also uses **[HTTP/2 multiplexing](https://blog.codavel.com/http2-mu
 
 ### **Exchange Simulator**
 
-The Exchange Simulator produces market movement for testing the Market Plant. It continuously generates randomized **L2 price-level deltas** (add level, reduce level, remove level) across instruments and sides, serializes each event into **MoldUDP64-framed UDP datagrams**, and sends them to the Market Plant over UDP unicast.
+The Exchange Simulator produces market movement for testing the Market Plant. It continuously generates randomized **L2 price-level deltas** _(add level, reduce level, remove level)_ across instruments and sides, serializes each event into **MoldUDP64-framed UDP datagrams**, and sends them to the Market Plant over UDP unicast.
 
 To support gap recovery, the simulator also keeps a fixed-size **in-memory history buffer** keyed by sequence number. When it receives retransmission requests _(MoldUDP64 header containing a starting sequence number and message count)_, it re-enqueues the requested events and replays them back to the Market Plant.
 
