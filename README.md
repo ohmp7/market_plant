@@ -65,8 +65,8 @@ high-level overview
 - **[`protos/market_plant/market_plant.proto`](./protos/market_plant/market_plant.proto)** _Protobuf definitions for the Market Plant gRPC API._
 
 - **[`src/app/`](./src/app)** _Top-level applications._
-  - **[`exchange.cpp`](./src/app/exchange.cpp)** _Exchange simulator._ 
-  - **[`subscriber.cpp`](./src/app/subscriber.cpp)** _gRPC subscriber client._
+  - **[`exhange/exchange.h`](./src/app/exhange/exchange.h)** _Exchange simulator._ 
+  - **[`subscriber/subscriber.cpp`](./src/app/subscriber/subscriber.h)** _gRPC subscriber client example._
 
 - **[`src/market/`](./src/market)** _Market Plant core._
   - **[`market_plant.h`](./src/market/market_plant.h)** _Market Plant server._  
@@ -80,7 +80,172 @@ high-level overview
 
 
 ## **Usage**
-high-level overview
+
+### Instrument Configuration
+
+The Market Plant Server is configurable via a JSON configuration file that defines the instruments to track:
+
+```json
+{
+    "instruments": [
+        {
+            "instrument_id": 1,
+            "symbol": "AAPL",
+            "specifications": {
+                "depth": 10
+            }
+        },
+        {
+            "instrument_id": 2,
+            "symbol": "META",
+            "specifications": {
+                "depth": 5
+            }
+        }
+    ]
+}
+```
+
+**Configuration fields:**
+- `instrument_id`: Unique identifier for the instrument
+- `symbol`: Trading symbol (informational)
+- `depth`: Number of price levels to maintain in the order book
+
+### Environment Variables
+
+The Market Plant also supports runtime configuration via environment variables:
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `GRPC_HOST` | gRPC server bind address | `0.0.0.0` |
+| `GRPC_PORT` | gRPC server port | `50051` |
+| `MARKET_IP` | UDP socket bind address | `127.0.0.1` |
+| `MARKET_PORT` | UDP socket bind port | `9001` |
+| `EXCHANGE_IP` | Exchange simulator address | `127.0.0.1` |
+| `EXCHANGE_PORT` | Exchange simulator port | `9000` |
+
+### Running Market Plant
+
+```bash
+# Use default configuration
+./market_plant --config config.json
+
+# Custom configuration
+GRPC_HOST=0.0.0.0 \
+GRPC_PORT=8080 \
+MARKET_PORT=9002 \
+EXCHANGE_IP=10.0.0.1 \
+EXCHANGE_PORT=9000 \
+./market_plant --config config.json
+```
+
+## gRPC API
+
+The Market Plant exposes two main RPC methods for market data streaming and subscription management.
+
+### 1. StreamUpdates() _(Server-side Streaming)_
+
+Establishes a streaming connection to receive real-time order book updates.
+
+**Request:**
+```protobuf
+message Subscription {
+    oneof action {
+        InstrumentIds subscribe = 1;    // Initial subscription(s)
+    }
+}
+
+message InstrumentIds {
+    repeated uint32 ids = 1;
+}
+```
+
+**Response Stream:**
+```protobuf
+message StreamResponse {
+    oneof payload {
+        SubscriberInitialization init = 1;    // First message
+        OrderBookUpdate update = 2;           // Subsequent messages
+    }
+}
+```
+At a high level, the flow is:
+
+1. The client starts a streaming session by subscribing to one or more instrument IDs.
+2. The server acknowledges the session with `subscriber_id` and `session_id`.
+3. The server publishes an initial snapshot per instrument (top-N depth on bid and ask side).
+4. The stream continues with incremental updates reflecting real-time book changes.
+
+### 2. UpdateSubscriptions() _(Subscription Management)_
+
+Modifies an existing subscription to add or remove instruments.
+
+**Request:**
+```protobuf
+message UpdateSubscriptionRequest {
+    uint32 subscriber_id = 1;     // From initialization
+    bytes session_id = 2;         // From initialization
+    Subscription change = 3;      // Add or remove instruments from client subscription list
+}
+```
+
+**Response:**
+```protobuf
+google.protobuf.Empty
+```
+
+**Basic Authentication:**
+- Requires `subscriber_id` and `session_id` from the initial StreamUpdates connection.
+- Invalid credentials return `PERMISSION_DENIED` error.
+
+### Order Book Updates
+
+#### Snapshot Updates
+
+Sent when a client first subscribes to an instrument. Contains the current state of the order book up to the configured depth.
+```protobuf
+message SnapshotUpdate {
+    repeated OrderBookEventUpdate bids = 1;  // Top-N bid levels
+    repeated OrderBookEventUpdate asks = 2;  // Top-N ask levels
+}
+```
+
+#### Incremental Updates
+
+Sent as market data changes occur. Each update modifies a single price level.
+```protobuf
+message IncrementalUpdate {
+    OrderBookEventUpdate update = 1;
+}
+
+message OrderBookEventUpdate {
+    OrderBookEventType type = 1;  // Delta Type
+    Level level = 2;
+}
+
+message Level {
+    Side side = 1;        // BID or ASK
+    uint32 price = 2;     // Price level
+    uint32 quantity = 3;  // Quantity to add/remove
+}
+```
+
+**Event Types:**
+- `ADD_LEVEL`: Adds quantity to a price level (creates level if it doesn't exist).
+- `REDUCE_LEVEL`: Removes quantity from a price level (deletes level if quantity reaches zero).
+
+The repository also includes a **sample subscriber** that displays a live order book:
+
+```bash
+# Subscribe to instrument 1 (default)
+./subscriber
+
+# Custom configuration
+GRPC_HOST=192.168.1.100 \
+GRPC_PORT=50051 \
+INSTRUMENT_IDS=1,2,3,4 \
+./subscriber
+```
 
 ## **Styling**
 
