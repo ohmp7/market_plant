@@ -125,7 +125,7 @@ The Market Plant also supports runtime configuration via environment variables:
 # Use default configuration
 ./market_plant --config config.json
 
-# Pin exchange feed thread to CPU core 7
+# Pin exchange feed thread to specified CPU core 
 ./market_plant --config config.json --cpu 7
 
 # Custom configuration
