@@ -42,7 +42,7 @@ static void ParseConfig(const char* path, MarketPlantCliConfig& out) {
     }
 }
 
-bool parse_args(int argc, char* argv[], MarketPlantCliConfig& out) {
+bool ParseArgs(int argc, char* argv[], MarketPlantCliConfig& out) {
     if (argc <= 1) throw std::runtime_error("insufficient options provided.");
     int config_file_idx = -1;
     
