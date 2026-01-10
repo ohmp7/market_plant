@@ -60,7 +60,7 @@ To support gap recovery, the simulator also keeps a fixed-size **in-memory histo
 - **[`protos/market_plant/market_plant.proto`](./protos/market_plant/market_plant.proto)** _Protobuf definitions for the Market Plant gRPC API._
 
 - **[`src/app/`](./src/app)** _Top-level applications._
-  - **[`exhange/exchange.h`](./src/app/exhange/exchange.h)** _Exchange simulator._ 
+  - **[`exchange/exchange.h`](./src/app/exchange/exchange.h)** _Exchange simulator._ 
   - **[`subscriber/subscriber.h`](./src/app/subscriber/subscriber.h)** _gRPC subscriber client example._
 
 - **[`src/market/`](./src/market)** _Market Plant core._
