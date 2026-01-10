@@ -22,7 +22,7 @@ const char* PacketTruncatedError::what() const noexcept {
 
 PacketHeader ParsePacketHeader(const std::uint8_t* buf, const Bytes len) {
     // Parse the given packet's header
-    if (len < kHeaderLength) throw PacketTruncatedError(len, kHeaderLength);
+    if (len < kHeaderLength) [[unlikely]] throw PacketTruncatedError(len, kHeaderLength);
 
     Bytes curr_offset = 0;
     PacketHeader header{};
@@ -37,7 +37,7 @@ PacketHeader ParsePacketHeader(const std::uint8_t* buf, const Bytes len) {
     header.message_count = ReadBigEndian<MessageCount>(buf, curr_offset); 
 
     header.end_of_session = (header.message_count == kEndSession);
-    if (header.end_of_session ) header.message_count = 0;
+    if (header.end_of_session ) [[unlikely]] header.message_count = 0;
 
     return header;
 }
@@ -100,7 +100,7 @@ bool MoldUDP64::HandlePacket(const std::uint8_t* buf, Bytes len) {
             }
         }
 
-        if (session_has_ended) return false;
+        if (session_has_ended) [[unlikely]] return false;
         
         // In-order packet parsing (one message per event)
         if (sequence_number == next_expected_sequence_num_) {
@@ -137,13 +137,13 @@ void MoldUDP64::Request(SequenceNumber sequence_number) {
 
 void MoldUDP64::Read(const std::uint8_t* buf, Bytes len) {
     // Read through the packet's message block
-    if (kHeaderLength + kMessageHeaderLength > len) throw PacketTruncatedError(len, kHeaderLength + kMessageHeaderLength);
+    if (kHeaderLength + kMessageHeaderLength > len) [[unlikely]] throw PacketTruncatedError(len, kHeaderLength + kMessageHeaderLength);
 
     Bytes curr_offset = kHeaderLength;
     std::uint16_t curr_message_len = ReadBigEndian<std::uint16_t>(buf, curr_offset);
     curr_offset += kMessageHeaderLength;
 
-    if (curr_offset + curr_message_len > len) throw PacketTruncatedError(len, curr_offset + curr_message_len);
+    if (curr_offset + curr_message_len > len) [[unlikely]] throw PacketTruncatedError(len, curr_offset + curr_message_len);
     
     message_view_.data = buf + curr_offset;
     message_view_.len = static_cast<Bytes>(curr_message_len);

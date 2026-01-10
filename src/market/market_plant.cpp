@@ -39,7 +39,7 @@ void OrderBook::PushEventToSubscribers(const MarketEvent& data) {
         to_enqueue.reserve(subscriptions_.size());
         // Get Subscribers for corresponding InstrumentID
         for (auto it = subscriptions_.begin(); it != subscriptions_.end(); ) {
-            if (auto sub = it->second.lock()) {
+            if (auto sub = it->second.lock()) [[likely]] {
                 to_enqueue.push_back(std::move(sub));
                 ++it;
             } else {
@@ -65,11 +65,11 @@ void OrderBook::AddOrder(Side side, Price price, Quantity quantity) {
 void OrderBook::RemoveOrder(Side side, Price price, Quantity quantity) {
     if (side == Side::kBid) {
         auto it = bids_.find(price);
-        if (it == bids_.end()) return;
+        if (it == bids_.end()) [[unlikely]] return;
         ModifyLevel(bids_, it, quantity);
     } else {
         auto it = asks_.find(price);
-        if (it == asks_.end()) return;
+        if (it == asks_.end()) [[unlikely]] return;
         ModifyLevel(asks_, it, quantity);
     }
 }
@@ -176,15 +176,18 @@ ExchangeFeed::~ExchangeFeed() {
 
 void ExchangeFeed::ConnectToExchange() {
     if (cpu_core_ >= 0) {
-        if (CPUAffinity::PinToCore(cpu_core_)) std::cout << "Successfully pinned Exchange Feed to core " << cpu_core_ << ".\n";
-        else std::cout << "Failed to pin Exchange Feed to core " << cpu_core_ << ".\n";
+        if (CPUAffinity::PinToCore(cpu_core_)) [[likely]] 
+            std::cout << "Successfully pinned Exchange Feed to core " << cpu_core_ << ".\n";
+        else {
+            std::cout << "Failed to pin Exchange Feed to core " << cpu_core_ << ".\n";
+        }
     }
 
     std::uint8_t buf[512];
 
     while (true) {
         ssize_t n = recvfrom(sockfd_, buf, sizeof(buf), 0, nullptr, nullptr);
-        if (n <= 0) continue;
+        if (n <= 0) [[unlikely]] continue;
         
         try {
             if (protocol_.HandlePacket(buf, static_cast<Bytes>(n))) {

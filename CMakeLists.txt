@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 4.2.1)
+
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 project(MarketPlant)
 
@@ -45,33 +47,38 @@ target_include_directories(${GENPROTO_LIB}
 )
 
 #  Networking Library
-add_library(network_lib src/network/moldudp64.cpp src/network/udp_messenger.cpp)
+add_library(network_lib 
+  src/network/moldudp64.cpp 
+  src/network/udp_messenger.cpp
+)
 enable_warnings(network_lib)
-target_include_directories(network_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/network)
+target_include_directories(network_lib PUBLIC 
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/network
+)
 target_include_directories(network_lib PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/src/market
 )
 
 # Market Plant Executable
 add_executable(market_plant
-    src/market/market_plant.cpp 
-    src/market/cli/market_cli.cpp
+  src/market/market_plant.cpp 
+  src/market/cli/market_cli.cpp
 )
-
 enable_warnings(market_plant)
 target_include_directories(market_plant PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/src/market       
   ${CMAKE_CURRENT_SOURCE_DIR}/src/market/cli
   /opt/homebrew/include
 )
-target_link_libraries(market_plant
-  PRIVATE 
-    network_lib
-    ${GENPROTO_LIB}
+target_link_libraries(market_plant PRIVATE 
+  network_lib
+  ${GENPROTO_LIB}
 )
 
 # Exchange Executable
-add_executable(exchange src/app/exchange/exchange.cpp)
+add_executable(exchange 
+  src/app/exchange/exchange.cpp
+)
 target_link_libraries(exchange PRIVATE network_lib)
 target_include_directories(exchange PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/src/market       
@@ -80,9 +87,13 @@ enable_warnings(exchange)
 
 
 # Subscriber Executable
-add_executable(subscriber src/app/subscriber/subscriber.cpp)
+add_executable(subscriber 
+  src/app/subscriber/subscriber.cpp
+)
 enable_warnings(subscriber)
-target_link_libraries(subscriber PRIVATE ${GENPROTO_LIB})
+target_link_libraries(subscriber PRIVATE 
+  ${GENPROTO_LIB}
+)
 target_include_directories(subscriber PRIVATE
   ${GENPROTO_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/src/market
