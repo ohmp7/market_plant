@@ -1,6 +1,6 @@
 # **Market Data Feed Handler**
 
-This repository showcases a low-latency C++ Market Data Feed Handler simulator _(the **Market Plant**)_. The motivation behind this project was to build a high-performance middleware service that ingests exchange-style UDP feeds and efficiently scales to one-to-many subscribers via [gRPC](https://grpc.io/).
+This repository showcases a low-latency C++20 Market Data Feed Handler simulator _(the **Market Plant**)_. The motivation behind this project was to build a high-performance middleware service that ingests exchange-style UDP feeds and efficiently scales to one-to-many subscribers via [gRPC](https://grpc.io/).
 
 ### _What is a Market Data Feed Handler?_
 
