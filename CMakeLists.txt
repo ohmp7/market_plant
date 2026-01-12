@@ -22,6 +22,7 @@ set(CMAKE_FIND_PACKAGE_PREFER_CONFIG ON)
 find_package(Protobuf CONFIG REQUIRED)
 find_package(gRPC CONFIG REQUIRED)
 find_package(utf8_range REQUIRED)
+find_package(RapidJSON REQUIRED)
 
 # Set necessary variables for genproto lib target
 set(GENPROTO_LIB "genproto_lib")
@@ -72,7 +73,6 @@ enable_warnings(market_plant)
 target_include_directories(market_plant PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/src/market       
   ${CMAKE_CURRENT_SOURCE_DIR}/src/market/cli
-  /opt/homebrew/include
 )
 target_link_libraries(market_plant PRIVATE 
   network_lib
