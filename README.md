@@ -63,16 +63,18 @@ To support gap recovery, the simulator also keeps a fixed-size **in-memory histo
   - **[`exchange/exchange.h`](./src/app/exchange/exchange.h)** _Exchange simulator._ 
   - **[`subscriber/subscriber.h`](./src/app/subscriber/subscriber.h)** _gRPC subscriber client example._
 
-- **[`src/market/`](./src/market)** _Market Plant core._
-  - **[`market_plant.h`](./src/market/market_plant.h)** _Market Plant server._  
-  - **[`event.h`](./src/market/event.h)** _Market event types and shared structures._ 
-  - **[`cli/market_cli.h`](./src/market/cli/market_cli.h)** _CLI parsing / config wiring._ 
+- **[`src/market/`](./src/market)** _Market Plant main logic._
+  - **[`server/market_plant.h`](./src/market/server/market_plant.h)** _Market Plant gRPC server (service implementation)._  
+  - **[`market_core.h`](./src/market/market_core.h)** _Core market components (OrderBook / BookManager)._
+  - **[`event.h`](./src/market/event.h)** _Market event types and shared structures._
+  - **[`market_plant_config.h`](./src/market/market_plant_config.h)** _Runtime network/config defaults._
+  - **[`cli/market_cli.h`](./src/market/cli/market_cli.h)** _CLI parsing._
 
 - **[`src/network/`](./src/network)** _Networking + wire-format utilities._
-  - **[`moldudp64.h`](./src/network/moldudp64.h)** _MoldUDP64 framing + gap detection/retransmission client logic._  
-  - **[`udp_messenger.h`](./src/network/udp_messenger.h)** _UDP socket send wrapper._
-  - **[`endian.h`](./src/network/endian.h)** _Big-endian (Network Byte Order) read/write helpers._
-
+  - **[`exchange_feed.h`](./src/network/exchange_feed.h)** _Exchange → Market Plant UDP feed ingestion + event parsing._  
+  - **[`moldudp/moldudp64.h`](./src/network/moldudp/moldudp64.h)** _MoldUDP64 client FSM logic._  
+  - **[`utils/udp_messenger.h`](./src/network/utils/udp_messenger.h)** _UDP socket send wrapper._
+  - **[`utils/endian.h`](./src/network/utils/endian.h)** _Big-endian (Network Byte Order) read/write helpers._
 
 ## **Usage**
 
